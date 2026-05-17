@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Adherence Scorecard — RehabPath</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0d1117;
+  --navy-mid: #151d2e;
+  --navy-light: #1e2d45;
+  --amber: #F5A623;
+  --amber-light: #fff8ec;
+  --amber-border: #f5d08a;
+  --text: #0d1117;
+  --text-mid: #4a5a78;
+  --text-muted: #8a9abb;
+  --border: #e2e8f4;
+  --bg: #f7f8fc;
+  --white: #ffffff;
+  --green: #3b6d11;
+  --green-bg: #eaf3de;
+  --green-border: #97c459;
+  --red: #a32d2d;
+  --red-bg: #fcebeb;
+  --red-border: #f09595;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ── HEADER ── */
+.site-header {
+  background: var(--navy);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo { font-family: 'Playfair Display', Georgia, serif; font-size: 18px; color: var(--white); }
+.logo span { color: var(--amber); }
+.header-tag { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--navy);
+  padding: 3.5rem 2rem 4rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 40px;
+  background: var(--bg);
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid rgba(245,166,35,0.3);
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 1.2rem;
+}
+.hero h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero h1 em { font-style: normal; color: var(--amber); }
+.hero-sub {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.65;
+  max-width: 520px;
+  margin: 0 auto 2rem;
+}
+.hero-meta {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.hero-meta-item { font-size: 12px; color: rgba(255,255,255,0.4); }
+.hero-meta-item strong { color: rgba(255,255,255,0.75); font-weight: 500; }
+
+/* ── MAIN LAYOUT ── */
+.main { max-width: 740px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+/* ── PROGRESS ── */
+.progress-wrap { margin-bottom: 2.5rem; }
+.progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.progress-text { font-size: 12px; font-weight: 500; color: var(--text-mid); letter-spacing: 0.04em; }
+.progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--amber); border-radius: 2px; transition: width 0.4s ease; }
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  display: none;
+}
+.q-card.active { display: block; animation: slideIn 0.25s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.q-num {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.6rem;
+}
+.q-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.35;
+  margin-bottom: 1.5rem;
+}
+.q-context {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.6;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+/* ── OPTIONS ── */
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: var(--white);
+  text-align: left;
+  width: 100%;
+}
+.option:hover { border-color: var(--amber-border); background: var(--amber-light); }
+.option.selected { border-color: var(--amber); background: var(--amber-light); }
+.option-letter {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-mid);
+  transition: all 0.15s;
+}
+.option.selected .option-letter { background: var(--amber); border-color: var(--amber); color: var(--navy); }
+.option-body { flex: 1; }
+.option-main { font-size: 14px; font-weight: 500; color: var(--navy); line-height: 1.4; }
+.option-sub { font-size: 12px; color: var(--text-mid); margin-top: 2px; line-height: 1.5; }
+
+/* ── NAV ── */
+.q-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; }
+.btn-back {
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-mid);
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-back:hover { border-color: var(--text-mid); }
+.btn-next {
+  padding: 11px 28px;
+  border: none;
+  border-radius: 8px;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-next:hover { background: var(--navy-light); }
+.btn-next:disabled { background: var(--border); color: var(--text-muted); cursor: not-allowed; }
+
+/* ── STAGE 1 RESULT ── */
+#stage1-result { display: none; animation: slideIn 0.3s ease; }
+.result-header {
+  background: var(--navy);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.result-header::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 160px; height: 160px;
+  background: rgba(245,166,35,0.07);
+  border-radius: 50%;
+  transform: translate(40px, -40px);
+}
+.result-eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.5rem; }
+.result-archetype { font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 900; color: var(--white); margin-bottom: 0.75rem; }
+.result-desc { font-size: 15px; font-weight: 300; color: rgba(255,255,255,0.7); line-height: 1.65; margin-bottom: 1.25rem; }
+.score-row { display: flex; align-items: center; gap: 1rem; }
+.score-badge {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--amber);
+  line-height: 1;
+}
+.score-label { font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5; }
+.score-band { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.band-high { background: var(--red-bg); color: var(--red); }
+.band-med { background: #faeeda; color: #854f0b; }
+.band-low { background: var(--green-bg); color: var(--green); }
+
+.implications { margin-bottom: 1rem; }
+.implication {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 10px 10px 0;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.implication strong { font-weight: 500; color: var(--navy); }
+
+/* ── STAGE 2 GATE ── */
+.stage2-gate {
+  background: var(--amber-light);
+  border: 1.5px solid var(--amber-border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1rem;
+}
+.gate-heading { font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+.gate-sub { font-size: 14px; color: var(--text-mid); line-height: 1.6; margin-bottom: 1.25rem; }
+.gate-items { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.25rem; }
+.gate-item { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-mid); }
+.gate-item::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+.gate-form { display: flex; gap: 8px; flex-wrap: wrap; }
+.gate-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--amber-border);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--white);
+  color: var(--navy);
+  outline: none;
+}
+.gate-input:focus { border-color: var(--amber); }
+.gate-btn {
+  padding: 11px 22px;
+  background: var(--navy);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.gate-btn:hover { background: var(--navy-light); }
+.gate-privacy { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+
+/* ── STAGE 2 FULL REPORT ── */
+#stage2-report { display: none; animation: slideIn 0.3s ease; }
+.report-section { margin-bottom: 1.5rem; }
+.section-head {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.benchmark-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+.benchmark-card {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+.b-num { font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 900; color: var(--navy); line-height: 1; margin-bottom: 4px; }
+.b-num.amber { color: var(--amber); }
+.b-label { font-size: 11px; color: var(--text-mid); line-height: 1.4; }
+.b-source { font-size: 10px; color: var(--text-muted); font-style: italic; margin-top: 4px; }
+
+.narrative-block {
+  background: var(--white);
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 10px;
+}
+.narrative-block h3 { font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 6px; }
+.narrative-block p { font-size: 13px; color: var(--text-mid); line-height: 1.65; }
+.narrative-block p + p { margin-top: 8px; }
+
+.gap-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.gap-table th { text-align: left; padding: 8px 12px; background: var(--bg); color: var(--text-mid); font-weight: 500; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.gap-table td { padding: 10px 12px; border-top: 1px solid var(--border); color: var(--text); line-height: 1.5; vertical-align: top; }
+.gap-table td:first-child { font-weight: 500; color: var(--navy); width: 35%; }
+.gap-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-high { background: var(--red-bg); color: var(--red); }
+.tag-med { background: #faeeda; color: #854f0b; }
+
+.cta-block {
+  background: var(--navy);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+.cta-block h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 900; color: var(--white); margin-bottom: 0.5rem; }
+.cta-block p { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; line-height: 1.65; }
+.cta-main {
+  display: inline-block;
+  padding: 13px 32px;
+  background: var(--amber);
+  color: var(--navy);
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.cta-secondary { display: block; margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.4); }
+
+.footnote { font-size: 11px; color: var(--text-muted); line-height: 1.6; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-style: italic; }
+
+/* ── UTILITIES ── */
+.hidden { display: none !important; }
+@media (max-width: 500px) {
+  .benchmark-grid { grid-template-columns: 1fr 1fr; }
+  .hero h1 { font-size: 28px; }
+  .hero-meta { gap: 1rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">Rehab<span>Path</span></div>
+  <span class="header-tag">Practice assessment tool</span>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Free · Takes 3 minutes</div>
+  <h1>How well does your practice <em>monitor</em> patient adherence between appointments?</h1>
+  <p class="hero-sub">Seven questions that reveal where your home exercise programme follow-up is working — and where the gaps are costing you outcomes.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><strong>7 questions</strong> · No login required</div>
+    <div class="hero-meta-item"><strong>Instant result</strong> · Your practice archetype</div>
+    <div class="hero-meta-item"><strong>Benchmarked report</strong> · With email</div>
+  </div>
+</div>
+
+<main class="main">
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span class="progress-text" id="progress-label">Question 1 of 7</span>
+      <span class="progress-text" id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- ── QUESTIONS ── -->
+
+  <div class="q-card active" id="q1">
+    <div class="q-num">Question 1 of 7</div>
+    <div class="q-text">How many patients per week do you prescribe a home exercise programme to?</div>
+    <div class="options" id="opts1">
+      <button class="option" onclick="select(1,'a',0)"><span class="option-letter">A</span><span class="option-body"><span class="option-main">1 – 5 patients</span></span></button>
+      <button class="option" onclick="select(1,'b',1)"><span class="option-letter">B</span><span class="option-body"><span class="option-main">6 – 15 patients</span></span></button>
+      <button class="option" onclick="select(1,'c',2)"><span class="option-letter">C</span><span class="option-body"><span class="option-main">16 – 30 patients</span></span></button>
+      <button class="option" onclick="select(1,'d',3)"><span class="option-letter">D</span><span class="option-body"><span class="option-main">More than 30 patients</span></span></button>
+    </div>
+    <div class="q-nav">
+      <span></span>
+      <button class="btn-next" id="next1" onclick="next(1)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <div class="q-card" id="q2">
+    <div class="q-num">Question 2 of 7</div>
+    <div class="q-text">How do you currently monitor whether patients complete their home exercise programme between appointments?</div>
+    <div class="options" id="opts2">
+      <button class="option" onclick="select(2,'a',3)"><span class="option-letter">A</span><span class="option-body"><span class="option-main">We don't have a formal process</span><span class="option-sub">Patients are trusted to manage their own programme</span></span></button>
+      <button class="option" onclick="select(2,'b',2)"><span class="option-letter">B</span><span class="option-body"><span class="option-main">We ask at the next appointment</span><span class="option-sub">Self-report at follow-up is our main signal</span></span></button>
+      <button class="option" onclick="select(2,'c',1)"><span class="option-letter">C</span><span class="option-body"><span class="option-main">Reception or admin follows up by phone or text</span><span class="option-sub">Manual outreach — depends on staff capacity</span></span></button>
+      <button class="option" onclick="select(2,'d',0)"><span class="option-letter">D</span><span class="option-body"><span class="option-main">We use a digital tracking or reminder tool</span><span class="option-sub">Systematic and doesn't rely on staff bandwidth</span></span></button>
+    </div>
+    <div class="q-nav">
+      <button class="btn-back" onclick="back(2)">← Back</button>
+      <button class="btn-next" id="next2" onclick="next(2)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <div class="q-card" id="q3">
+    <div class="q-num">Question 3 of 7</div>
+    <div class="q-text">When a patient stops engaging with their home programme, how do you typically find out?</div>
+    <div class="options" id="opts3">
+      <button class="option" onclick="select(3,'a',3)"><span class="option-letter">A</span><span class="option-body"><span class="option-main">At their next appointment — if they tell us</span><span class="option-sub">There's often a significant gap before we know</span></span></button>
+      <button class="option" onclick="select(3,'b',3)"><span class="option-letter">B</span><span class="option-body"><span class="option-main">We don't usually find out unless they re-present</span><span class="option-sub">Dropout is largely invisible to the practice</span></span></button>
+      <button class="option" onclick="select(3,'c',1)"><span class="option-letter">C</span><span class="option-body"><span class="option-main">When they stop responding to our follow-up calls</span><span class="option-sub">We're proactive but the signal is still indirect</span></span></button>
+      <button class="option" onclick="select(3,'d',0)"><span class="option-letter">D</span><span class="option-body"><span class="option-main">Our system flags it — we're notified promptly</span><span class="option-sub">Early signal, early intervention possible</span></span></button>
+    </div>
+    <div class="q-nav">
+      <button class="btn-back" onclick="back(3)">← Back</button>
+      <button class="btn-next" id="next3" onclick="next(3)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <div class="q-card" id="q4">
+    <div class="q-num">Question 4 of 7</div>
+    <div class="q-text">What percentage of your patients do you estimate fully complete their prescribed home exercise programme?</div>
+    <p class="q-context">This is your honest estimate — there's no right answer. Most practitioners overestimate slightly, which is worth knowing.</p>
+    <div class="options" id="opts4">
+      <button class="option" onclick="select(4,'a',3)"><span class="option-letter">A</span><span class="option-body"><span class="option-main">Fewer than 25%</span></span></button>
+      <button class="option" onclick="select(4,'b',2)"><span class="option-letter">B</span><span class="option-body"><span class="option-main">25% – 50%</span></span></button>
+      <button class="option" onclick="select(4,'c',1)"><span class="option-letter">C</span><span class="option-body"><span class="option-main">50% – 75%</span></span></button>
+      <button class="option" onclick="select(4,'d',0)"><span class="option-letter">D</span><span class="option-body"><span class="option-main">More than 75%</span></span></button>
+    </div>
+    <div class="q-nav">
+      <button class="btn-back" onclick="back(4)">← Back</button>
+      <button class="btn-next" id="next4" onclick="next(4)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <div class="q-card" id="q5">
+    <div class="q-num">Question 5 of 7</div>
+    <div class="q-text">How much time does your practice spend per week on manual patient adherence follow-up — calls, texts, reminders?</div>
+    <div class="options" id="opts5">
+      <button class="option" onclick="select(5,'a',0)"><span class="option-letter">A</span><span class="option-body"><span class="option-main">None — we don't do structured follow-up</span></span></button>
+      <button class="option" onclick="select(5,'b',1)"><span class="option-letter">B</span><span class="option-body"><span class="option-main">Less than 1 hour</span></span></button>
+      <button class="option" onclick="select(5,'c',2)"><span class="option-letter">C</span><span class="option-body"><span class="option-main">1 – 3 hours</span></span></button>
+      <button class="option" onclick="select(5,'d',3)"><span class="option-letter">D</span><span class="option-body"><span class="option-main">More than 3 hours</span><span class="option-sub">Time that could be directed to clinical work</span></span></button>
+    </div>
+    <div class="q-nav">
+      <button class="btn-back" onclick="back(5)">← Back</button>
+      <button class="btn-next" id="next5" onclick="next(5)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <div class="q-card" id="q6">
+    <div class="q-num">Question 6 of 7</div>
+    <div class="q-text">Can you report patient adherence rates to ACC or other funders if asked?</div>
+    <div class="options" id="opts6">
+      <button class="option" onclick="select(6,'a',3)"><span class="option-letter">A</span><span class="option-body"><span class="option-main">No — we have no way to capture this systematically</span></span></button>
+      <button class="option" onclick="select(6,'b',2)"><span class="option-letter">B</span><span class="option-body"><span class="option-main">We could estimate, but not with hard data</span></span></button>
+      <button class="option" onclick="select(6,'c',1)"><span class="option-letter">C</span><span class="option-body"><span class="option-main">Partially — some data exists but it's not structured</span></span></button>
+      <button class="option" onclick="select(6,'d',0)"><span class="option-letter">D</span><span class="option-body"><span class="option-main">Yes — we track this and can produce a report</span></span></button>
+    </div>
+    <div class="q-nav">
+      <button class="btn-back" onclick="back(6)">← Back</button>
+      <button class="btn-next" id="next6" onclick="next(6)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <div class="q-card" id="q7">
+    <div class="q-num">Question 7 of 7</div>
+    <div class="q-text">How often do patients re-present with the same or a related injury within 12 months of discharge?</div>
+    <div class="options" id="opts7">
+      <button class="option" onclick="select(7,'a',0)"><span class="option-letter">A</span><span class="option-body"><span class="option-main">Rarely — this isn't a pattern we notice</span></span></button>
+      <button class="option" onclick="select(7,'b',1)"><span class="option-letter">B</span><span class="option-body"><span class="option-main">Occasionally — roughly 1 in 10 patients</span></span></button>
+      <button class="option" onclick="select(7,'c',2)"><span class="option-letter">C</span><span class="option-body"><span class="option-main">Frequently — it's a pattern we've noticed</span></span></button>
+      <button class="option" onclick="select(7,'d',2)"><span class="option-letter">D</span><span class="option-body"><span class="option-main">We don't track re-presentations</span><span class="option-sub">So we genuinely don't know</span></span></button>
+    </div>
+    <div class="q-nav">
+      <button class="btn-back" onclick="back(7)">← Back</button>
+      <button class="btn-next" id="next7" onclick="showResult()" disabled>See my results →</button>
+    </div>
+  </div>
+
+  <!-- ── STAGE 1 RESULT ── -->
+  <div id="stage1-result">
+    <div class="result-header">
+      <div class="result-eyebrow">Your practice archetype</div>
+      <div class="result-archetype" id="r-archetype">—</div>
+      <div class="result-desc" id="r-desc">—</div>
+      <div class="score-row">
+        <div class="score-badge" id="r-score">—</div>
+        <div>
+          <div class="score-label">Adherence gap score<br>(lower is better)</div>
+          <span class="score-band" id="r-band">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="implications" id="r-implications"></div>
+
+    <div class="stage2-gate">
+      <div class="gate-heading">Get your full benchmarked practice report</div>
+      <div class="gate-sub">A deeper look at where your practice sits relative to published research on physiotherapy adherence — and what the gap costs in practical terms.</div>
+      <div class="gate-items">
+        <div class="gate-item">Your gap analysis against published adherence research</div>
+        <div class="gate-item">What your archetype typically costs in re-injury risk</div>
+        <div class="gate-item">The three highest-leverage changes for your practice type</div>
+        <div class="gate-item">How RehabPath addresses your specific gaps</div>
+      </div>
+      <div class="gate-form">
+        <input class="gate-input" id="gate-email" type="email" placeholder="your@practice.co.nz" />
+        <button class="gate-btn" onclick="showReport()">Send my report →</button>
+      </div>
+      <div class="gate-privacy">Your email is used only to send the report. We don't add you to a mailing list.</div>
+    </div>
+  </div>
+
+  <!-- ── STAGE 2 FULL REPORT ── -->
+  <div id="stage2-report">
+    <div class="result-header" style="margin-bottom:1.5rem">
+      <div class="result-eyebrow">Benchmarked practice report</div>
+      <div class="result-archetype" id="r2-archetype">—</div>
+      <div class="result-desc" id="r2-desc" style="margin-bottom:0">—</div>
+    </div>
+
+    <div class="report-section">
+      <div class="section-head">What the research says — conservative benchmarks</div>
+      <div class="benchmark-grid">
+        <div class="benchmark-card">
+          <div class="b-num amber">47%</div>
+          <div class="b-label">of patients show rapid adherence decline once pain reduces — dropping from 7.7 to 4.2 out of 10 by week 22, well before structural recovery is complete</div>
+          <div class="b-source">Dobson et al., 2018 · Clinical Rheumatology</div>
+        </div>
+        <div class="benchmark-card">
+          <div class="b-num">Wks 12–22</div>
+          <div class="b-label">is when adherence declines most sharply — the point at which pain has reduced but structural recovery is incomplete</div>
+          <div class="b-source">Dobson et al., 2018 · Clinical Rheumatology</div>
+        </div>
+        <div class="benchmark-card">
+          <div class="b-num amber">Pain ≠</div>
+          <div class="b-label">recovery. Pain relief typically precedes full tissue healing by several weeks</div>
+          <div class="b-source">Pain neuroscience; rehabilitation science</div>
+        </div>
+      </div>
+      <div class="narrative-block">
+        <p>Dobson et al. (2018) tracked knee OA patients across three adherence trajectories. The critical finding: 92% of patients entered their programme with moderate-to-high motivation. The problem wasn't starting — it was sustaining. Nearly half (47%) showed rapid decline between weeks 12 and 22, precisely when pain had reduced but tissue healing was incomplete. A further 45% declined gradually. Only 6% were low adherence from the outset. Non-adherence is a structural problem — not a patient character failure — and practices with no visibility into it are operating without a signal they need.</p>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <div class="section-head">Your specific gap analysis</div>
+      <table class="gap-table" id="r-gap-table">
+        <thead><tr><th>Gap area</th><th>What this means for your practice</th><th>Risk level</th></tr></thead>
+        <tbody id="gap-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="report-section">
+      <div class="section-head">Highest-leverage changes for your practice type</div>
+      <div id="r-recommendations"></div>
+    </div>
+
+    <div class="report-section">
+      <div class="section-head">How RehabPath addresses these gaps</div>
+      <div class="narrative-block">
+        <h3>Designed for the gap your practice currently can't see</h3>
+        <p>RehabPath is a WhatsApp-based behavioural coaching platform that sits between your appointments and your patients' home exercise routines. Patients receive daily check-ins and adaptive coaching messages — calibrated to where they are in their recovery — without requiring a new app or any change to your clinical workflow.</p>
+        <p>For practices currently operating without adherence visibility, it adds a systematic signal for the first time. For practices spending clinical or admin time on manual follow-up, it removes that overhead. For ACC-funded practices, it produces the structured adherence data that funders are increasingly looking for.</p>
+      </div>
+    </div>
+
+    <div class="cta-block">
+      <h2>See it working for your practice</h2>
+      <p>We're currently running a small pilot with NZ physiotherapy practices. No commitment — a 20-minute conversation to see whether it's a fit.</p>
+      <a class="cta-main" href="mailto:chris@rehabpath.co.nz?subject=Practice%20conversation%20—%20Adherence%20Scorecard">Book a conversation →</a>
+      <span class="cta-secondary">Or email chris@rehabpath.co.nz · 021 208 7784</span>
+    </div>
+
+    <p class="footnote">Primary benchmark: Dobson et al. (2018), adherence trajectory analysis in knee osteoarthritis patients, Clinical Rheumatology — identifies three adherence clusters; 92.7% of patients begin with moderate-to-high adherence, 47.4% show rapid decline between weeks 12 and 22, 45.1% decline gradually, 6.3% persistently low. Supporting reference: Fernandes et al. (2023), Health Professionals' Motivational Strategies to Enhance Adherence in the Rehabilitation of People with Lower Limb Fractures: Scoping Review, Int. J. Environ. Res. Public Health, 20, 7050. Market context: Sapere Research Group Physiotherapy Services Market Review, December 2025 (commissioned by ACC and Physiotherapy New Zealand). All figures represent published research estimates, not RehabPath outcome data.</p>
+  </div>
+
+</main>
+
+<script>
+const answers = {};
+
+const ARCHETYPES = {
+  setAndForget: {
+    name: "The Set-and-Forget Practice",
+    desc: "Your practice prescribes home exercise programmes but has limited systematic follow-up between appointments. The gap between prescription and completion is largely invisible — you find out about dropout at the next visit, or not at all.",
+    implications: [
+      "<strong>Invisible dropout:</strong> Patients who stop exercising don't flag it — they simply attend their next appointment having made less progress than expected, or don't return at all.",
+      "<strong>Delayed intervention:</strong> By the time you know a patient has disengaged, the critical early window — when structured support has the most impact — has already passed. Research shows adherence can decline sharply once pain reduces, well before structural recovery is complete.",
+      "<strong>Outcome attribution risk:</strong> Without adherence data, it's difficult to distinguish patients who didn't recover because of non-adherence from those who didn't recover despite adherence. Both look the same from the outside."
+    ]
+  },
+  manualChaser: {
+    name: "The Manual Chaser Practice",
+    desc: "Your practice recognises the adherence problem and actively tries to address it — but through manual follow-up that depends on staff time and capacity. The intent is right; the infrastructure isn't scalable.",
+    implications: [
+      "<strong>Staff bandwidth ceiling:</strong> The follow-up effort is real and valued, but it competes with clinical and administrative priorities. When it's busy, follow-up slips — and that's usually when patients need it most.",
+      "<strong>Inconsistent signal quality:</strong> A phone call that goes to voicemail and isn't returned tells you something, but not much. You know they didn't pick up — not whether they're exercising, in pain, or simply not answering.",
+      "<strong>Scalability constraint:</strong> As patient volume grows, the manual approach doesn't scale with it. The gap between patients who get follow-up and those who don't widens over time."
+    ]
+  },
+  motivatedFilter: {
+    name: "The Motivated Patient Filter",
+    desc: "Your outcomes look good — because your caseload skews toward patients who are already highly motivated to recover. The adherence problem exists; it's just less visible because the patients most at risk of disengaging are underrepresented in your practice.",
+    implications: [
+      "<strong>Selection effect, not system effect:</strong> Good outcomes in a self-selected motivated population don't tell you whether your follow-up system would hold up with a broader or higher-risk caseload.",
+      "<strong>Quiet dropout:</strong> Patients who disengage often don't tell you — they simply stop attending. Your completion data may be optimistic because you're not counting the patients who voted with their feet.",
+      "<strong>ACC caseload risk:</strong> If your referral mix shifts toward ACC claimants — often older, more complex, less intrinsically motivated — your current system may not be built to support them."
+    ]
+  },
+  outcomeBlind: {
+    name: "The Outcome-Blind Practice",
+    desc: "Your practice has no systematic way to measure adherence or connect it to recovery outcomes. You're delivering good clinical care — but without the data to prove it, benchmark it, or improve it deliberately.",
+    implications: [
+      "<strong>No baseline to improve from:</strong> Without measuring adherence, you can't know whether changes you make to your follow-up approach are actually working. Improvement requires measurement.",
+      "<strong>Reporting vulnerability:</strong> ACC and other funders are increasingly interested in outcome data. Practices that can't report adherence rates are at a disadvantage when funding, accreditation, or referral decisions are made.",
+      "<strong>Re-injury blind spot:</strong> If you're not tracking re-presentations, you can't know whether your discharge protocols are sending patients home ready — or whether they're returning because recovery wasn't complete."
+    ]
+  }
+};
+
+function determineArchetype(ans) {
+  let setAndForget = 0, manualChaser = 0, motivatedFilter = 0, outcomeBlind = 0;
+
+  if (ans[2] === 'a' || ans[2] === 'b') setAndForget += 2;
+  if (ans[2] === 'c') manualChaser += 3;
+  if (ans[3] === 'a' || ans[3] === 'b') setAndForget += 2;
+  if (ans[3] === 'c') manualChaser += 2;
+  if (ans[4] === 'c' || ans[4] === 'd') motivatedFilter += 2;
+  if (ans[5] === 'c' || ans[5] === 'd') manualChaser += 2;
+  if (ans[5] === 'a') { setAndForget += 1; outcomeBlind += 1; }
+  if (ans[6] === 'a' || ans[6] === 'b') outcomeBlind += 3;
+  if (ans[7] === 'a') motivatedFilter += 2;
+  if (ans[7] === 'd') outcomeBlind += 2;
+
+  const scores = { setAndForget, manualChaser, motivatedFilter, outcomeBlind };
+  return Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+}
+
+function computeScore(ans) {
+  return Object.values(ans).reduce((sum, v) => {
+    const s = parseInt(v) || 0;
+    return sum + s;
+  }, 0);
+}
+
+function select(q, letter, points) {
+  answers[q] = letter;
+  answers['_s' + q] = points;
+  document.querySelectorAll('#opts' + q + ' .option').forEach(o => o.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('next' + q).disabled = false;
+}
+
+function next(q) {
+  document.getElementById('q' + q).classList.remove('active');
+  document.getElementById('q' + (q + 1)).classList.add('active');
+  updateProgress(q + 1);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function back(q) {
+  document.getElementById('q' + q).classList.remove('active');
+  document.getElementById('q' + (q - 1)).classList.add('active');
+  updateProgress(q - 1);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress(q) {
+  const pct = Math.round(((q - 1) / 7) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = 'Question ' + q + ' of 7';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function showResult() {
+  document.getElementById('q7').classList.remove('active');
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-label').textContent = 'Complete';
+  document.getElementById('progress-pct').textContent = '100%';
+
+  const scoreRaw = Object.keys(answers).filter(k => k.startsWith('_s')).reduce((s, k) => s + answers[k], 0);
+  const maxScore = 18;
+  const scaledScore = Math.round((scoreRaw / maxScore) * 10);
+
+  const archetypeKey = determineArchetype(answers);
+  const a = ARCHETYPES[archetypeKey];
+
+  document.getElementById('r-archetype').textContent = a.name;
+  document.getElementById('r-desc').textContent = a.desc;
+  document.getElementById('r-score').textContent = scaledScore + '/10';
+
+  let band, bandClass;
+  if (scaledScore >= 7) { band = 'High gap'; bandClass = 'band-high'; }
+  else if (scaledScore >= 4) { band = 'Moderate gap'; bandClass = 'band-med'; }
+  else { band = 'Lower gap'; bandClass = 'band-low'; }
+  const bandEl = document.getElementById('r-band');
+  bandEl.textContent = band;
+  bandEl.className = 'score-band ' + bandClass;
+
+  const impWrap = document.getElementById('r-implications');
+  impWrap.innerHTML = '';
+  a.implications.forEach(imp => {
+    const d = document.createElement('div');
+    d.className = 'implication';
+    d.innerHTML = imp;
+    impWrap.appendChild(d);
+  });
+
+  window['_archetypeKey'] = archetypeKey;
+  window['_scaledScore'] = scaledScore;
+  window['_bandClass'] = bandClass;
+
+  document.getElementById('stage1-result').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showReport() {
+  const email = document.getElementById('gate-email').value;
+  if (!email || !email.includes('@')) {
+    document.getElementById('gate-email').style.borderColor = '#f09595';
+    return;
+  }
+
+  // Send lead to Formspree (silent fail — never blocks the report)
+  fetch("https://formspree.io/f/mbdqkayb", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify({
+      email: email,
+      source: "Practice Adherence Scorecard",
+      archetype: window["_archetypeKey"] || "unknown",
+      score: window["_scaledScore"] || 0
+    })
+  }).catch(function(){});
+
+
+  const archetypeKey = window['_archetypeKey'];
+  const a = ARCHETYPES[archetypeKey];
+
+  document.getElementById('r2-archetype').textContent = a.name;
+  document.getElementById('r2-desc').textContent = a.desc;
+
+  const gaps = buildGaps(archetypeKey);
+  const tbody = document.getElementById('gap-tbody');
+  tbody.innerHTML = '';
+  gaps.forEach(g => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td>' + g.area + '</td><td>' + g.detail + '</td><td><span class="gap-tag ' + g.cls + '">' + g.level + '</span></td>';
+    tbody.appendChild(tr);
+  });
+
+  const recWrap = document.getElementById('r-recommendations');
+  recWrap.innerHTML = '';
+  buildRecs(archetypeKey).forEach(r => {
+    const d = document.createElement('div');
+    d.className = 'narrative-block';
+    d.innerHTML = '<h3>' + r.title + '</h3><p>' + r.body + '</p>';
+    recWrap.appendChild(d);
+  });
+
+  document.getElementById('stage1-result').style.display = 'none';
+  document.getElementById('stage2-report').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function buildGaps(key) {
+  const shared = [
+    { area: "Adherence visibility", detail: "No real-time signal between appointments. Dropout is invisible until the next visit.", level: "High", cls: "tag-high" },
+    { area: "ACC reporting capability", detail: "Cannot produce structured adherence data if a funder requests it.", level: "High", cls: "tag-high" },
+  ];
+  const byType = {
+    setAndForget: [
+      { area: "Follow-up infrastructure", detail: "No systematic process to reach patients between discharge and next appointment.", level: "High", cls: "tag-high" },
+      { area: "Early intervention", detail: "The early dropout window — when pain reduces but recovery isn't complete — passes before the practice has a signal. Research indicates this can occur well into the programme, not just in the first fortnight.", level: "High", cls: "tag-high" },
+    ],
+    manualChaser: [
+      { area: "Follow-up scalability", detail: "Manual effort doesn't grow with patient volume — the gap widens as the practice grows.", level: "Medium", cls: "tag-med" },
+      { area: "Signal quality", detail: "Voicemail and no-reply texts confirm outreach happened, not whether patients are exercising.", level: "Medium", cls: "tag-med" },
+    ],
+    motivatedFilter: [
+      { area: "Caseload coverage", detail: "Systems optimised for motivated patients may not hold up with ACC or higher-complexity referrals.", level: "Medium", cls: "tag-med" },
+      { area: "Dropout detection", detail: "Quiet dropout (patients who stop returning) may not be captured in completion estimates.", level: "Medium", cls: "tag-med" },
+    ],
+    outcomeBlind: [
+      { area: "Re-presentation tracking", detail: "Without tracking re-presentations, the cost of incomplete recovery isn't visible.", level: "High", cls: "tag-high" },
+      { area: "Outcome data", detail: "No structured data to demonstrate clinical performance or improve systematically.", level: "High", cls: "tag-high" },
+    ]
+  };
+  return shared.concat(byType[key] || []);
+}
+
+function buildRecs(key) {
+  const recs = {
+    setAndForget: [
+      { title: "1. Create a mid-programme touchpoint", body: "A single check-in between appointment one and appointment two — even a simple text — significantly changes the dropout signal. It doesn't need to be clinical. It needs to happen before pain reduces and motivation starts to drift." },
+      { title: "2. Make the home programme feel like it's still being watched", body: "Patients complete exercises at higher rates when they believe someone is tracking their progress. This doesn't require surveillance — it requires the perception of accountability. A scheduled check-in creates that perception without adding clinical overhead." },
+      { title: "3. Automate the first layer of follow-up", body: "Manual follow-up is better than none, but it's vulnerable to busy periods. The highest-leverage change is making your first follow-up touchpoint automatic and consistent — so it happens regardless of how busy the practice is that week." },
+    ],
+    manualChaser: [
+      { title: "1. Replace the voicemail loop with a lower-friction channel", body: "Phone calls to mobile numbers in the middle of the day have low answer rates for working adults. WhatsApp messages, sent at a time the patient agreed to, have significantly higher engagement — and responses are available asynchronously." },
+      { title: "2. Convert admin follow-up time to clinical signal", body: "The hours your practice spends on manual follow-up currently produce low-quality signals. Redirecting that time toward reviewing structured completion data — rather than chasing responses — gives you a richer picture for less effort." },
+      { title: "3. Build a follow-up process that scales with patient volume", body: "Your current system works because your team makes it work. The question is whether it will still work at 1.5× or 2× current patient volume. Designing the process to be systematic rather than effort-dependent future-proofs it." },
+    ],
+    motivatedFilter: [
+      { title: "1. Test your system against a harder case", body: "The most useful thing you can do right now is run your current follow-up process with a patient who isn't intrinsically motivated and see what happens. That will tell you whether your system works — or whether your outcomes are a function of your referral mix." },
+      { title: "2. Track re-presentations deliberately for 6 months", body: "If re-presentation rates are genuinely low, that's a story worth telling to funders and referrers. If they're higher than expected, it's important information. You can't know without measuring." },
+      { title: "3. Prepare your follow-up system for ACC caseload growth", body: "ACC claimants represent a different patient profile from elective or sports patients. Building a structured follow-up capability now — while your current caseload is manageable — means you're not building it under pressure later." },
+    ],
+    outcomeBlind: [
+      { title: "1. Start measuring anything — even imperfectly", body: "A simple completion question at each appointment — 'what percentage of your sessions did you complete this week?' — gives you a baseline that nothing currently provides. Imperfect data is significantly better than no data when you're trying to understand a problem." },
+      { title: "2. Prioritise ACC-reportable data now, ahead of demand", body: "The Sapere Research Group's 2025 physiotherapy market review recommended digital self-management tools as a priority. Practices that can demonstrate adherence outcomes will be better positioned as ACC acts on that recommendation. Building that capability proactively is easier than building it under pressure." },
+      { title: "3. Connect re-presentation tracking to programme completion", body: "The most powerful outcome metric you can generate is: patients who complete their programme re-present at rate X, patients who don't complete re-present at rate Y. Even a small dataset with that structure is a compelling clinical story." },
+    ],
+  };
+  return recs[key] || [];
+}
+</script>
+</body>
+</html>
