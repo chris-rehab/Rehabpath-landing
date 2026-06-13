@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Your Patient Was Doing So Well — And Then Wasn't — RehabPath Thinking</title>
+<meta name="description" content="The habit science your discharge conversation is missing. By Chris Revans, founder of RehabPath.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #151d2e;
+    --surface-2: #1a2438;
+    --orange: #f5a623;
+    --orange-dark: #d4891a;
+    --orange-glow: rgba(245,166,35,0.15);
+    --text: #f0f4ff;
+    --text-muted: #7a8aa8;
+    --text-body: #c8d3e8;
+    --border: rgba(245,166,35,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(245,166,35,0.15);
+  }
+  .logo img { height: 40px; width: auto; display: block; }
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--orange); }
+  nav a.active { color: var(--orange); }
+  .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+  .btn {
+    display: inline-block;
+    background: var(--orange);
+    color: #0d1117;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .btn:hover { background: var(--orange-dark); transform: translateY(-1px); color: #0d1117; }
+
+  /* ARTICLE LAYOUT */
+  .article-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 9rem 2rem 6rem;
+  }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--orange); }
+  .breadcrumb span { opacity: 0.4; }
+
+  /* ARTICLE HEADER */
+  .article-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: var(--orange-glow);
+    margin-bottom: 1.75rem;
+  }
+
+  .article-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  .article-subtitle {
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+  }
+
+  .article-byline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 4rem;
+  }
+  .byline-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--orange);
+    flex-shrink: 0;
+  }
+  .byline-info { flex: 1; }
+  .byline-name { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+  .byline-meta { font-size: 0.8rem; color: var(--text-muted); }
+  .byline-readtime {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.3rem 0.8rem;
+    background: var(--surface);
+    border-radius: 100px;
+  }
+
+  /* ARTICLE BODY */
+  .article-body {
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text-body);
+  }
+
+  .article-body p { margin-bottom: 1.6rem; }
+
+  .article-body h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 3.5rem 0 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(245,166,35,0.15);
+  }
+
+  .article-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* CALLOUT BOX */
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 8px 8px 0;
+    padding: 1.5rem 1.75rem;
+    margin: 2.5rem 0;
+  }
+  .callout-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.6rem;
+  }
+  .callout p {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* PRACTICAL BOX */
+  .practical {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.75rem 2rem;
+    margin: 2.5rem 0;
+  }
+  .practical-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1rem;
+  }
+  .practical p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-body);
+    line-height: 1.75;
+    margin-bottom: 0.75rem;
+  }
+  .practical p:last-child { margin-bottom: 0; }
+  .practical strong { color: var(--text); }
+
+  /* SUPERSCRIPTS */
+  sup {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    color: var(--orange);
+    vertical-align: super;
+    line-height: 0;
+  }
+
+  /* REFERENCES */
+  .references {
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .references h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1.5rem;
+  }
+  .references ol {
+    list-style: none;
+    counter-reset: ref-counter;
+  }
+  .references li {
+    counter-increment: ref-counter;
+    display: flex;
+    gap: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 0.9rem;
+  }
+  .references li::before {
+    content: counter(ref-counter) ".";
+    color: var(--orange);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 1.2rem;
+  }
+  .references em { font-style: italic; color: var(--text-muted); }
+
+  /* AUTHOR BIO */
+  .author-bio {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid rgba(245,166,35,0.1);
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+  .bio-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--orange);
+    flex-shrink: 0;
+  }
+  .bio-text { font-family: 'DM Sans', sans-serif; }
+  .bio-name { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 0.3rem; }
+  .bio-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+
+  /* CTA */
+  .article-cta {
+    margin-top: 3.5rem;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .article-cta h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .article-cta p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  /* SERIES NAV */
+  .series-nav {
+    margin-top: 3rem;
+    padding: 1.5rem 2rem;
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .series-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+  }
+  .series-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--orange);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .series-link:hover { opacity: 0.75; }
+
+  /* COPYRIGHT */
+  .copyright {
+    margin-top: 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 4rem;
+  }
+  footer p { margin-bottom: 0.3rem; }
+
+  @media (max-width: 680px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .article-wrap { padding: 7rem 1.25rem 4rem; }
+    .article-title { font-size: 2rem; }
+    .author-bio { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><img src="/rehabpath_logo_transparent.png" alt="RehabPath"></a>
+  <div class="nav-links">
+    <a href="/#how">How it works</a>
+    <a href="/#for-who">Who it's for</a>
+    <a href="/#about">About</a>
+    <a href="/thinking/" class="active">Thinking</a>
+    <a href="/#contact">Get in touch</a>
+    <a href="https://quiz.rehabpath.co.nz" target="_blank" class="btn">Take the assessment →</a>
+  </div>
+</nav>
+
+<div class="article-wrap">
+
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>/</span>
+    <a href="/thinking/">Thinking</a>
+    <span>/</span>
+    <span>Why Your Patient Was Doing So Well</span>
+  </div>
+
+  <span class="article-tag">Thought Leadership · Habit Formation in Rehabilitation</span>
+
+  <h1 class="article-title">Why your patient was doing so well — and then wasn't</h1>
+  <p class="article-subtitle">The habit science your discharge conversation is missing</p>
+
+  <div class="article-byline">
+    <div class="byline-avatar">CR</div>
+    <div class="byline-info">
+      <div class="byline-name">Chris Revans</div>
+      <div class="byline-meta">Founder, RehabPath Ltd · June 2026</div>
+    </div>
+    <div class="byline-readtime">7 min read</div>
+  </div>
+
+  <div class="article-body">
+
+    <p>You've seen this patient. They came in motivated, completed their home exercises diligently through the acute phase, reported back positively at their follow-up. Then — somewhere around weeks three or four — the wheels quietly came off. By the time you saw them again, they'd done perhaps half of what was prescribed. They weren't sure why. Life had just got in the way.</p>
+
+    <p>This is not a compliance problem. It is not a patient character problem. It is a habit problem — and understanding the mechanism changes what you do about it.</p>
+
+    <p>If you've read James Clear's <em>Atomic Habits</em>, you'll recognise the general shape of what I'm describing. But what Clear explores for general behaviour change has a specific and largely unrecognised application in rehabilitation that the clinical literature hasn't yet caught up with. The mechanism in your consulting room operates differently from the gym or the morning routine — and that difference matters for what you say to a patient before they walk out the door.</p>
+
+    <h2>How habits actually form — and why rehabilitation sits in an awkward window</h2>
+
+    <p>Habits are not formed by willpower or intention. They are formed by repetition in a consistent context, until the behaviour becomes automatic — requiring minimal conscious effort to initiate or complete. This is the point researchers call automaticity.</p>
+
+    <p>A 2010 study by Lally and colleagues at University College London tracked participants forming new habits in everyday life and found that the average time to reach automaticity was 66 days, with a range of 18 to 254 days depending on the complexity of the behaviour.<sup>1</sup> Simpler behaviours — drinking a glass of water after breakfast — automated faster. Complex, physically demanding behaviours took far longer.</p>
+
+    <p>A physiotherapy home exercise programme sits firmly at the complex end of that range. It involves specific movements, often in specific sequences, ideally at consistent times. It requires physical effort at a point when the body is in recovery. And it typically runs for six to twelve weeks — 42 to 84 days.</p>
+
+    <div class="callout">
+      <div class="callout-label">The timing problem</div>
+      <p>At the short end of the clinical window, the programme concludes well before average automaticity is reached. At the long end, it barely clears it. Your patient is being asked to sustain a behaviour independently at exactly the point when it is most likely to still require conscious effort — and when their pain-driven reason to make that effort has already faded.</p>
+    </div>
+
+    <p>This is the Habit Reversion Window: the period when the patient's recovery routine and their normal pre-injury routine are in direct competition, and the recovery routine has not yet won.</p>
+
+    <h2>Pain was doing a job you didn't know it was doing</h2>
+
+    <p>Habit formation researchers describe behaviour in terms of a loop: a cue triggers a routine, which delivers a reward, which reinforces the loop.<sup>2</sup> In the early weeks of rehabilitation, pain is performing a powerful cue function. It is present, it is motivating, and it reliably signals that action is required. Your patient doesn't need to remember to do their exercises — their body reminds them.</p>
+
+    <p>As pain resolves, that cue disappears. There is nothing to replace it. The patient's nervous system no longer sends the signal that initiated the behaviour — and the habit loop, which was never fully established, quietly collapses.</p>
+
+    <p>This is not the patient abandoning their recovery. It is the cue system failing them.</p>
+
+    <p>The complicating factor is timing. Pain typically resolves at weeks two to four — precisely within the window when dropout rates are highest and before any new habit cue has been established in its place.<sup>3</sup> The patient feels better. Normal life reasserts itself. And with each passing day, the recovery routine becomes slightly harder to restart, because the competing pre-injury routine is becoming slightly more entrenched.</p>
+
+    <h2>Where habit science diverges from rehabilitation reality</h2>
+
+    <p>It is worth naming one place where popular habit science does not translate cleanly into clinical practice — because it changes what you need to say to a patient.</p>
+
+    <p>Much of the current conversation about habit formation is built around identity change: the idea that lasting habits require the person to see themselves differently, to adopt the behaviour as part of who they are. This is compelling for lifestyle change. It is less applicable in rehabilitation.</p>
+
+    <p>Most of your patients do not want to become exercisers. They want to recover and return to the life they had before the injury. Asking them to build an identity around their exercises is not only unnecessary — it misreads what they are actually motivated by. Their goal is to stop needing the exercises, not to keep doing them indefinitely.</p>
+
+    <p>This reframes what "success" looks like. You are not trying to install a permanent habit. You are trying to maintain a <em>temporary</em> behaviour long enough for the underlying structural recovery to complete — across a specific window, typically the 42 to 66 days in which the habit is most fragile and the cue structure has already broken down.</p>
+
+    <h2>What this means for the conversation before they leave</h2>
+
+    <p>Most discharge conversations focus on what the patient needs to do: the exercises, the frequency, the load progression. This is necessary but insufficient. The habit science suggests there are two additional things worth addressing directly — and they take about three minutes.</p>
+
+    <p>The first is cue design. Ask your patient: when in your day will you do this? What will be happening immediately before? What will you see, hear, or be doing that will act as your trigger? Research on implementation intentions — the specific plan of when, where, and how a behaviour will occur — consistently shows that patients who form a concrete plan are significantly more likely to follow through than those who merely intend to.<sup>4</sup> The exercises on the sheet are the routine. What you help them design in the room is the cue.</p>
+
+    <p>The second is the honest conversation about the window they are entering. Pain will ease — that's a good sign. But the point at which pain eases is also the highest-risk moment in their recovery, because the signal that was driving their behaviour is going to disappear before the habit is established. Knowing this in advance changes how a patient interprets that moment. Instead of "I feel better, I probably don't need to keep doing these," they are more likely to think: "I was told this would happen. This is the critical window."</p>
+
+    <div class="practical">
+      <div class="practical-label">The practical implication</div>
+      <p><strong>Before they leave:</strong> Help them identify a specific cue — an existing routine that will immediately precede their exercises. Not "morning," but "after I make coffee." Not "when I have time," but "before I sit down after dinner."</p>
+      <p><strong>Name the risk window explicitly:</strong> "In about two to three weeks, you're going to feel significantly better. That's when most people ease off — and it's also when you most need to keep going. Your pain easing is a sign the treatment is working, not a signal to stop."</p>
+      <p><strong>Make the minimum version concrete:</strong> Agree on what the scaled-back version looks like on a hard day — the version that keeps the habit loop alive even when full effort isn't available. A habit maintained at reduced intensity is far easier to rebuild than a habit that has lapsed entirely.</p>
+    </div>
+
+    <h2>The gap that structured support can close</h2>
+
+    <p>Even with the best discharge conversation, there is a structural limit to what a single clinical appointment can achieve. The patient leaves the room with good intentions and a plan. Between that moment and their next appointment, anything can happen — and without a feedback loop back to you, you won't know what did.</p>
+
+    <p>This is the open-loop problem in outpatient rehabilitation: the system has no signal between sessions. The patient either completes the programme independently or doesn't, and you find out which at the next visit — often too late to meaningfully intervene.</p>
+
+    <p>The discharge conversation matters. It is the most under-used tool in the clinical encounter. But it is most powerful when it is the beginning of a supported behaviour change process, not the end of a clinical instruction one.</p>
+
+    <p>I'm currently running a proof-of-concept programme in New Zealand exploring how structured support between sessions — designed specifically around the habit formation window — can close that loop. If you're a physiotherapist interested in the problem this article describes, I'd welcome a conversation.</p>
+
+  </div>
+
+  <!-- SERIES NAV -->
+  <div class="series-nav">
+    <div class="series-label">Part 1 of this series</div>
+    <a href="/thinking/the-behaviour-gap.html" class="series-link">← The Behaviour Gap: why rehabilitation fails after the pain goes away</a>
+  </div>
+
+  <!-- REFERENCES -->
+  <div class="references">
+    <h3>References</h3>
+    <ol>
+      <li>Lally, P., van Jaarsveld, C.H.M., Potts, H.W.W. &amp; Wardle, J. (2010). How are habits formed: Modelling habit formation in the real world. <em>European Journal of Social Psychology</em>, 40(6), 998–1009. DOI: 10.1002/ejsp.674</li>
+      <li>Duhigg, C. (2012). <em>The Power of Habit: Why We Do What We Do in Life and Business.</em> Random House. [Popular synthesis of habit loop research; underlying neuroscience from Graybiel, A.M. (1998). The basal ganglia and chunking of action repertoires. <em>Neurobiology of Learning and Memory</em>, 70(1–2), 119–136.]</li>
+      <li>Fernandes, J.B. et al. (2023). Health Professionals' Motivational Strategies to Enhance Adherence in the Rehabilitation of People with Lower Limb Fractures: Scoping Review. <em>Int. J. Environ. Res. Public Health</em>, 20, 7050. DOI: 10.3390/ijerph20227050</li>
+      <li>Gollwitzer, P.M. &amp; Sheeran, P. (2006). Implementation intentions and goal achievement: A meta-analysis of effects and processes. <em>Advances in Experimental Social Psychology</em>, 38, 69–119. DOI: 10.1016/S0065-2601(06)38002-1</li>
+    </ol>
+  </div>
+
+  <!-- AUTHOR BIO -->
+  <div class="author-bio">
+    <div class="bio-avatar">CR</div>
+    <div class="bio-text">
+      <div class="bio-name">Chris Revans</div>
+      <div class="bio-desc">Founder of RehabPath Ltd, a behavioural support platform focused on patient adherence in musculoskeletal rehabilitation. He holds a B.A. (Hons) in Sports Studies and a Professional Scrum Product Owner certification. RehabPath is currently in proof-of-concept development in New Zealand. © 2026 Chris Revans / RehabPath Ltd.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="article-cta">
+    <h3>Is the behaviour gap showing up in your practice?</h3>
+    <p>Take the free Practice Adherence Scorecard — a 10-question assessment that benchmarks where dropout risk is highest in your current patient pathway.</p>
+    <a href="/scorecard.html" class="btn">Take the scorecard →</a>
+  </div>
+
+  <p class="copyright">© 2026 Chris Revans / RehabPath Ltd. All rights reserved. This article may be shared with attribution. It may not be reproduced in full without written permission.</p>
+
+</div>
+
+<footer>
+  <p>RehabPath Ltd · Auckland, New Zealand · <a href="mailto:chris@rehabpath.co.nz" style="color:var(--orange);text-decoration:none;">chris@rehabpath.co.nz</a></p>
+  <p style="margin-top:0.5rem;opacity:0.5;font-size:0.8rem;">© 2026 RehabPath Ltd</p>
+</footer>
+
+</body>
+</html>
