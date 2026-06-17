@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When ACC Says "Data and Transparency" — What Should the MSK Sector Be Listening For? — RehabPath Thinking</title>
+<meta name="description" content="ACC's Secondary Care redesign signals a shift from delivering a service to demonstrating one. What does that mean for MSK providers — and for the data they currently don't have?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #151d2e;
+    --surface-2: #1a2438;
+    --orange: #f5a623;
+    --orange-dark: #d4891a;
+    --orange-glow: rgba(245,166,35,0.15);
+    --text: #f0f4ff;
+    --text-muted: #7a8aa8;
+    --text-body: #c8d3e8;
+    --border: rgba(245,166,35,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(245,166,35,0.15);
+  }
+  .logo img { height: 40px; width: auto; display: block; }
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--orange); }
+  nav a.active { color: var(--orange); }
+  .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+  .btn {
+    display: inline-block;
+    background: var(--orange);
+    color: #0d1117;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .btn:hover { background: var(--orange-dark); transform: translateY(-1px); color: #0d1117; }
+
+  /* ARTICLE LAYOUT */
+  .article-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 9rem 2rem 6rem;
+  }
+
+  /* BREADCRUMB */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--orange); }
+  .breadcrumb span { opacity: 0.4; }
+
+  /* ARTICLE HEADER */
+  .article-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: var(--orange-glow);
+    margin-bottom: 1.75rem;
+  }
+
+  .article-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  .article-subtitle {
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+  }
+
+  .article-byline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 4rem;
+  }
+  .byline-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--orange);
+    flex-shrink: 0;
+  }
+  .byline-info { flex: 1; }
+  .byline-name { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+  .byline-meta { font-size: 0.8rem; color: var(--text-muted); }
+  .byline-readtime {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.3rem 0.8rem;
+    background: var(--surface);
+    border-radius: 100px;
+  }
+
+  /* ARTICLE BODY */
+  .article-body {
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text-body);
+  }
+
+  .article-body p { margin-bottom: 1.6rem; }
+
+  .article-body h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 3.5rem 0 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(245,166,35,0.15);
+  }
+
+  .article-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .article-body em {
+    font-style: italic;
+  }
+
+  /* CALLOUT BOX */
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 8px 8px 0;
+    padding: 1.5rem 1.75rem;
+    margin: 2.5rem 0;
+  }
+  .callout-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.6rem;
+  }
+  .callout p {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* PRACTICAL BOX */
+  .practical {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.75rem 2rem;
+    margin: 2.5rem 0;
+  }
+  .practical-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1rem;
+  }
+  .practical p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-body);
+    line-height: 1.75;
+    margin-bottom: 0.75rem;
+  }
+  .practical p:last-child { margin-bottom: 0; }
+  .practical strong { color: var(--text); }
+
+  /* SUPERSCRIPTS */
+  sup {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    color: var(--orange);
+    vertical-align: super;
+    line-height: 0;
+  }
+
+  /* REFERENCES */
+  .references {
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .references h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1.5rem;
+  }
+  .references ol {
+    list-style: none;
+    counter-reset: ref-counter;
+  }
+  .references li {
+    counter-increment: ref-counter;
+    display: flex;
+    gap: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 0.9rem;
+  }
+  .references li::before {
+    content: counter(ref-counter) ".";
+    color: var(--orange);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 1.2rem;
+  }
+  .references em { font-style: italic; color: var(--text-muted); }
+
+  /* RELATED READING */
+  .related-reading {
+    margin-top: 3rem;
+    padding: 1.5rem 2rem;
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .related-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  .related-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .related-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--orange);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+  .related-link:hover { opacity: 0.75; }
+
+  /* AUTHOR BIO */
+  .author-bio {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid rgba(245,166,35,0.1);
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+  .bio-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--orange);
+    flex-shrink: 0;
+  }
+  .bio-text { font-family: 'DM Sans', sans-serif; }
+  .bio-name { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 0.3rem; }
+  .bio-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+
+  /* CTA */
+  .article-cta {
+    margin-top: 3.5rem;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .article-cta h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .article-cta p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  /* COPYRIGHT */
+  .copyright {
+    margin-top: 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 4rem;
+  }
+  footer p { margin-bottom: 0.3rem; }
+
+  @media (max-width: 680px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .article-wrap { padding: 7rem 1.25rem 4rem; }
+    .article-title { font-size: 2rem; }
+    .author-bio { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><img src="/rehabpath_logo_transparent.png" alt="RehabPath"></a>
+  <div class="nav-links">
+    <a href="/#how">How it works</a>
+    <a href="/#for-who">Who it's for</a>
+    <a href="/#about">About</a>
+    <a href="/thinking/" class="active">Thinking</a>
+    <a href="/#contact">Get in touch</a>
+    <a href="https://quiz.rehabpath.co.nz" target="_blank" class="btn">Take the assessment →</a>
+  </div>
+</nav>
+
+<div class="article-wrap">
+
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>/</span>
+    <a href="/thinking/">Thinking</a>
+    <span>/</span>
+    <span>When ACC Says "Data and Transparency"</span>
+  </div>
+
+  <span class="article-tag">Sector Commentary · ACC &amp; ICPMSK</span>
+
+  <h1 class="article-title">When ACC says "data and transparency" — what should the MSK sector be listening for?</h1>
+  <p class="article-subtitle">ACC's Secondary Care redesign signals a shift from delivering a service to demonstrating one. The question is whether providers are ready for what comes next.</p>
+
+  <div class="article-byline">
+    <div class="byline-avatar">CR</div>
+    <div class="byline-info">
+      <div class="byline-name">Chris Revans</div>
+      <div class="byline-meta">Founder, RehabPath Ltd · June 2026 · Opinion</div>
+    </div>
+    <div class="byline-readtime">6 min read</div>
+  </div>
+
+  <div class="article-body">
+
+    <p>ACC's recent Secondary Care Market Engagement webinar outlined the most significant redesign of musculoskeletal care contracting in years. A new Musculoskeletal Triage and Assessment Service. Restructured contracts. A clearer pathway from referral to exit.</p>
+
+    <p>But the slide that deserves the most attention from MSK providers wasn't about triage, or funding, or even the procurement timeline.</p>
+
+    <p>It was this: <em>"We're introducing requirements to enable a more transparent, data-centred system that gives better visibility of how kiritaki move through secondary care and to monitor performance."</em><sup>1</sup></p>
+
+    <div class="callout">
+      <div class="callout-label">The shift in four words</div>
+      <p>Data. Transparent. Visibility. Performance. That is a shift in the nature of the provider relationship with ACC — from delivering a service to <em>demonstrating</em> one.</p>
+    </div>
+
+    <h2>The question the sector should be asking now</h2>
+
+    <p>The KPI framework hasn't been published yet. The specific data reporting requirements won't be detailed until the Request for Proposal process opens in early 2027. But that gap — between the direction being clear and the specifics being defined — is exactly when the most useful thinking happens.</p>
+
+    <p>Because the question isn't just <em>what will ACC measure?</em></p>
+
+    <p>The deeper question is: <strong>what does the patient journey between appointments currently produce as evidence, and is any of it legible to a funder?</strong></p>
+
+    <p>Many providers are already further along than the sector gets credit for. Exercise tracking platforms, patient-facing apps, and digital home programme tools have matured considerably — and the clinicians using them have real visibility into whether patients are logging sessions and completing prescribed exercises.</p>
+
+    <p>But there is a layer beneath session completion that most tools don't yet reach: <em>why</em> engagement changes over time, <em>what</em> predicts the drop-off before it happens, and <em>whether</em> the right intervention at the right moment can recover a patient who is drifting out of their programme. Completion data tells you what happened. Behavioural data tells you what's about to happen — and gives you something to act on.</p>
+
+    <p>That distinction matters because it is likely to sit at the centre of what ACC wants to measure. The question a funder asks is not just "did the patient attend?" — it's "did the pathway produce the outcome, and can you show the mechanism?"</p>
+
+    <p>ACC's data mandate, whatever form it takes, will push into exactly that space.</p>
+
+    <h2>Why this matters more for ICPMSK providers than anyone else</h2>
+
+    <p>The Integrated Care Pathway for Musculoskeletal conditions exists specifically to manage the patient over an extended treatment window — not just assess and refer, but accompany. That makes it uniquely exposed to outcome accountability, because the pathway <em>owns</em> the recovery arc in a way that a single-episode specialist assessment does not.</p>
+
+    <p>If ACC's performance framework asks: <em>did this patient recover, return to function, and stay recovered?</em> — then the ICPMSK provider's answer depends heavily on what happened in the spaces between appointments.</p>
+
+    <p>Home exercise adherence is the most consequential variable in that space — and the hardest to measure in a way that produces evidence legible to a funder rather than just useful to a clinician.</p>
+
+    <p>The Sapere Research Group's December 2025 market review — commissioned jointly by ACC and Physiotherapy New Zealand — identified digital self-management tools as a priority intervention for exactly this reason.<sup>2</sup> The evidence base for adherence failure in MSK rehab is substantial: between 40 and 65 per cent of patients disengage from prescribed home exercise programmes before clinical recovery is complete.<sup>3</sup> The clinical system knows this. What it has lacked, until now, is a contractual incentive to do anything about it.</p>
+
+    <p>That incentive is arriving.</p>
+
+    <h2>What useful data infrastructure looks like in this context</h2>
+
+    <p>We don't yet know what ACC will require. But we can reason about what would be <em>useful</em> — to clinicians, to funders, and to the kiritaki whose recovery depends on consistent follow-through.</p>
+
+    <div class="practical">
+      <div class="practical-label">The data that matters across the recovery arc</div>
+      <p><strong>Engagement signals</strong> — is the patient interacting with their programme between appointments, and how consistently?</p>
+      <p><strong>Adherence trajectory</strong> — not just a binary completed/not-completed, but the shape of engagement over time. A patient who completes 90% of sessions in weeks one to four and drops to 30% in weeks five to eight is telling you something clinically important.</p>
+      <p><strong>Drop-off indicators</strong> — at what point in the recovery window does engagement decline, and does it correlate with pain reduction? It usually does — and therein lies the core adherence problem.</p>
+      <p><strong>Recovery-to-behaviour correlation</strong> — over a population of patients, do those who maintain adherence return to function faster, re-present less, and generate lower total claim costs?</p>
+    </div>
+
+    <p>That last point is the one that matters to ACC at a system level. It is also the one that is hardest to answer from session logs alone — because it requires connecting patient behaviour across the full recovery window, not just within appointments.</p>
+
+    <h2>A provocation for the sector</h2>
+
+    <p>The February 2027 market briefing and March 2027 RFP release are closer than they feel. Providers who arrive at that process with outcome data already in hand — even imperfect, early-stage outcome data — will be in a materially different conversation than those who don't.</p>
+
+    <p>The procurement question won't just be <em>can you deliver the service?</em> It will increasingly be <em>can you demonstrate what the service achieves?</em></p>
+
+    <p>That is a reasonable ask. It is also one that rewards providers who have started building the infrastructure for data capture now, before it is required.</p>
+
+    <p>We think the sector is more ready for this shift than it might assume. The clinical knowledge is there. The patient relationships are there. What has been missing is the layer that connects patient behaviour between appointments to structured, legible outcome evidence.</p>
+
+    <p>That layer is what we're building.</p>
+
+  </div>
+
+  <!-- RELATED READING -->
+  <div class="related-reading">
+    <div class="related-label">Related reading</div>
+    <div class="related-links">
+      <a href="/thinking/the-behaviour-gap" class="related-link">→ The Behaviour Gap: why rehabilitation fails after the pain goes away</a>
+      <a href="/thinking/why-your-patient-stopped" class="related-link">→ Why your patient was doing so well — and then wasn't</a>
+    </div>
+  </div>
+
+  <!-- REFERENCES -->
+  <div class="references">
+    <h3>Sources</h3>
+    <ol>
+      <li>ACC Secondary Care Market Engagement webinar, June 2026. Slide 5: Key Shifts — Data and Transparency.</li>
+      <li>Sapere Research Group. <em>Physiotherapy Market Review.</em> December 2025. Commissioned by ACC and Physiotherapy New Zealand.</li>
+      <li>Fernandes, J.B. et al. (2023). Health Professionals' Motivational Strategies to Enhance Adherence in the Rehabilitation of People with Lower Limb Fractures: Scoping Review. <em>Int. J. Environ. Res. Public Health</em>, 20, 7050. DOI: 10.3390/ijerph20227050</li>
+    </ol>
+  </div>
+
+  <!-- AUTHOR BIO -->
+  <div class="author-bio">
+    <div class="bio-avatar">CR</div>
+    <div class="bio-text">
+      <div class="bio-name">Chris Revans</div>
+      <div class="bio-desc">Founder of RehabPath Ltd, a behavioural support platform focused on patient adherence in musculoskeletal rehabilitation. He holds a B.A. (Hons) in Sports Studies and a Professional Scrum Product Owner certification. RehabPath is currently in proof-of-concept development in New Zealand. © 2026 Chris Revans / RehabPath Ltd.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="article-cta">
+    <h3>How well does your practice see what happens between appointments?</h3>
+    <p>Take the free Practice Adherence Scorecard — a 10-question assessment that benchmarks where dropout risk is highest in your current patient pathway.</p>
+    <a href="/scorecard" class="btn">Take the scorecard →</a>
+  </div>
+
+  <p class="copyright">© 2026 Chris Revans / RehabPath Ltd. All rights reserved. This article may be shared with attribution. It may not be reproduced in full without written permission.</p>
+
+</div>
+
+<footer>
+  <p>RehabPath Ltd · Auckland, New Zealand · <a href="mailto:chris@rehabpath.co.nz" style="color:var(--orange);text-decoration:none;">chris@rehabpath.co.nz</a></p>
+  <p style="margin-top:0.5rem;opacity:0.5;font-size:0.8rem;">© 2026 RehabPath Ltd</p>
+</footer>
+
+</body>
+</html>
