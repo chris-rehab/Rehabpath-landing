@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RehabPath · Get started</title>
+<meta name="description" content="Start your RehabPath programme. Complete this short form to begin your supported recovery journey.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #151d2e;
+    --surface-2: #1a2438;
+    --orange: #f5a623;
+    --orange-dark: #d4891a;
+    --orange-glow: rgba(245,166,35,0.12);
+    --text: #f0f4ff;
+    --text-muted: #7a8aa8;
+    --border-subtle: rgba(255,255,255,0.07);
+    --green: #10b981;
+    --green-bg: rgba(16,185,129,0.08);
+    --error: #f87171;
+    --error-bg: rgba(248,113,113,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,166,35,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,166,35,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .wrap {
+    max-width: 520px;
+    margin: 0 auto;
+    padding-top: 2rem;
+    position: relative;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .logo-text { font-size: 1.2rem; font-weight: 500; }
+  .logo-text span { color: var(--orange); }
+
+  /* Progress indicator */
+  .progress-steps {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .ps {
+    height: 3px;
+    flex: 1;
+    border-radius: 3px;
+    background: var(--border-subtle);
+    transition: background 0.3s;
+  }
+
+  .ps.active { background: var(--orange); }
+  .ps.done   { background: var(--orange-dark); }
+
+  /* Step panels */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  .step-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--orange);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+
+  .step-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  /* Form fields */
+  .field { margin-bottom: 1.25rem; }
+
+  label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  label .hint {
+    font-size: 0.75rem;
+    font-weight: 300;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    opacity: 0.7;
+    margin-left: 0.4rem;
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="date"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus,
+  textarea:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px var(--orange-glow);
+  }
+
+  input::placeholder,
+  textarea::placeholder { color: #7a8aa8; opacity: 0.85; }
+
+  textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+
+  /* Pain scale */
+  .pain-scale {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .pain-btn {
+    flex: 1;
+    padding: 0.55rem 0;
+    border-radius: 6px;
+    min-width: 0;
+    font-size: 0.8rem;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .pain-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+  .pain-btn.selected { background: var(--orange-glow); border-color: var(--orange); color: var(--orange); font-weight: 500; }
+
+  /* Yes/No toggle */
+  .yn-group { display: flex; gap: 0.5rem; }
+
+  .yn-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .yn-btn.selected-yes { background: var(--green-bg); border-color: var(--green); color: var(--green); font-weight: 500; }
+  .yn-btn.selected-no  { background: var(--error-bg); border-color: var(--error); color: var(--error); font-weight: 500; }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .btn-primary {
+    flex: 1;
+    padding: 0.85rem;
+    background: var(--orange);
+    color: #0d1117;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .btn-primary:hover { background: var(--orange-dark); }
+  .btn-primary:active { transform: scale(0.99); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-back {
+    padding: 0.85rem 1.25rem;
+    background: none;
+    color: var(--text-muted);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-back:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+  /* Error */
+  .error-msg {
+    display: none;
+    background: var(--error-bg);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 8px;
+    color: var(--error);
+    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+  }
+  .error-msg.visible { display: block; }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  .success-screen.visible { display: block; }
+
+  .success-icon {
+    font-size: 3rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .success-screen h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+  }
+
+  .success-screen p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 380px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .success-screen .highlight {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin: 0 auto;
+    max-width: 380px;
+    text-align: left;
+  }
+
+  .success-screen .highlight p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .success-screen .highlight strong { color: var(--text); font-weight: 500; }
+
+  /* Privacy note */
+  .privacy-note {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .privacy-note strong { font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="logo-wrap">
+    <div class="logo-text">Rehab<span>Path</span></div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-steps">
+    <div class="ps active" id="ps-1"></div>
+    <div class="ps" id="ps-2"></div>
+    <div class="ps" id="ps-3"></div>
+  </div>
+
+  <!-- ── STEP 1: About you ── -->
+  <div class="step-panel active" id="step-1">
+    <div class="step-eyebrow">Step 1 of 3</div>
+    <h1>Let's get you started</h1>
+    <p class="step-subtitle">Your physio has referred you to RehabPath. This takes about 2 minutes. Your answers help us send you the right support at the right time.</p>
+
+    <div class="field">
+      <label for="full_name">Your full name</label>
+      <input type="text" id="full_name" placeholder="e.g. Sarah Mitchell" autocomplete="name"/>
+    </div>
+
+    <div class="field">
+      <label for="phone">WhatsApp number <span class="hint">We'll send support messages here</span></label>
+      <input type="tel" id="phone" placeholder="+64 21 000 0000" autocomplete="tel"/>
+    </div>
+
+    <div class="field">
+      <label for="email">Email <span class="hint">Optional</span></label>
+      <input type="email" id="email" placeholder="your@email.com" autocomplete="email"/>
+    </div>
+
+    <div class="field">
+      <label for="programme_start">Programme start date</label>
+      <input type="date" id="programme_start"/>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="goToStep(2)">Continue →</button>
+    </div>
+
+    <div class="error-msg" id="err-1"></div>
+  </div>
+
+  <!-- ── STEP 2: Your recovery ── -->
+  <div class="step-panel" id="step-2">
+    <div class="step-eyebrow">Step 2 of 3</div>
+    <h1>Your recovery</h1>
+    <p class="step-subtitle">These questions help us understand what matters to you — not just your injury.</p>
+
+    <div class="field">
+      <label for="identity_anchor">What do you most want to get back to?</label>
+      <textarea id="identity_anchor" placeholder="e.g. Weekend football with my son, hiking, getting back to the gym…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>How would you rate your pain right now? <span class="hint">0 = no pain, 10 = worst imaginable</span></label>
+      <div class="pain-scale" id="pain-scale">
+        <button class="pain-btn" data-val="0" onclick="selectPain(0)">0</button>
+        <button class="pain-btn" data-val="1" onclick="selectPain(1)">1</button>
+        <button class="pain-btn" data-val="2" onclick="selectPain(2)">2</button>
+        <button class="pain-btn" data-val="3" onclick="selectPain(3)">3</button>
+        <button class="pain-btn" data-val="4" onclick="selectPain(4)">4</button>
+        <button class="pain-btn" data-val="5" onclick="selectPain(5)">5</button>
+        <button class="pain-btn" data-val="6" onclick="selectPain(6)">6</button>
+        <button class="pain-btn" data-val="7" onclick="selectPain(7)">7</button>
+        <button class="pain-btn" data-val="8" onclick="selectPain(8)">8</button>
+        <button class="pain-btn" data-val="9" onclick="selectPain(9)">9</button>
+        <button class="pain-btn" data-val="10" onclick="selectPain(10)">10</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Is someone in your life aware you're doing this programme?</label>
+      <div class="yn-group">
+        <button class="yn-btn" id="yn-yes" onclick="selectSupport(true)">Yes</button>
+        <button class="yn-btn" id="yn-no"  onclick="selectSupport(false)">No</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goToStep(1)">← Back</button>
+      <button class="btn-primary" onclick="goToStep(3)">Continue →</button>
+    </div>
+
+    <div class="error-msg" id="err-2"></div>
+  </div>
+
+  <!-- ── STEP 3: Consent ── -->
+  <div class="step-panel" id="step-3">
+    <div class="step-eyebrow">Step 3 of 3</div>
+    <h1>Before we begin</h1>
+    <p class="step-subtitle">Please read this carefully. We believe you should know exactly how your information is used.</p>
+
+    <div style="background:var(--surface); border:1px solid var(--border-subtle); border-radius:10px; padding:1.25rem; margin-bottom:1.5rem; font-size:0.875rem; line-height:1.8; color:var(--text-muted);">
+      <p style="margin-bottom:0.75rem;"><strong style="color:var(--text); font-weight:500;">What we collect:</strong> Your name, WhatsApp number, injury context, and daily exercise responses.</p>
+      <p style="margin-bottom:0.75rem;"><strong style="color:var(--text); font-weight:500;">How it's stored:</strong> In an encrypted database hosted in AWS Sydney, New Zealand. Only your physio and RehabPath have access.</p>
+      <p style="margin-bottom:0.75rem;"><strong style="color:var(--text); font-weight:500;">What we use it for:</strong> To send you timely, personalised support messages and to help your physio understand your progress.</p>
+      <p style="margin-bottom:0.75rem;"><strong style="color:var(--text); font-weight:500;">Your rights:</strong> You can request access to your data or ask for it to be deleted at any time by emailing <a href="mailto:privacy@rehabpath.co.nz" style="color:var(--orange);">privacy@rehabpath.co.nz</a>.</p>
+      <p><strong style="color:var(--text); font-weight:500;">Sharing:</strong> Your data is not sold or shared with third parties. Anonymous, aggregated data may be used for research purposes.</p>
+    </div>
+
+    <div class="field">
+      <label>Your physio's name <span class="hint">Who referred you?</span></label>
+      <input type="text" id="physio_name" placeholder="e.g. Breege Nolan"/>
+    </div>
+
+    <div class="field">
+      <label>Clinic name</label>
+      <input type="text" id="physio_clinic" placeholder="e.g. Axis Sports Medicine"/>
+    </div>
+
+    <div class="field">
+      <label>ACC claim number <span class="hint">Optional</span></label>
+      <input type="text" id="acc_claim" placeholder="e.g. 2024-12345"/>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-back" onclick="goToStep(2)">← Back</button>
+      <button class="btn-primary" id="submit-btn" onclick="submitForm()">I agree — start my programme</button>
+    </div>
+
+    <div class="error-msg" id="err-3"></div>
+
+    <div class="privacy-note">
+      By clicking "I agree", you consent to RehabPath collecting and using your information as described above, in accordance with the New Zealand Privacy Act 2020.
+    </div>
+  </div>
+
+  <!-- ── SUCCESS ── -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">✅</div>
+    <h2>You're in. Let's do this.</h2>
+    <p>Your programme has started. You'll receive a welcome message on WhatsApp shortly — keep an eye out for a message from RehabPath.</p>
+    <div class="highlight">
+      <p><strong>What happens next:</strong><br>
+      You'll receive a short WhatsApp message from us each day. Reply to let us know how your exercises went. That's it — we'll take care of the rest.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://crozjmckjputdzbjedrl.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyb3pqbWNranB1dGR6YmplZHJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMDAxMjAsImV4cCI6MjA5Nzc3NjEyMH0.K3hElbBcgA_ThI3QWPxPPjQWRu6uH9ARliB02IzDjQE';
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // Form state
+  const form = {
+    full_name: null,
+    phone: null,
+    email: null,
+    programme_start: null,
+    identity_anchor: null,
+    baseline_pain: null,
+    social_support: null,
+    physio_name: null,
+    physio_clinic: null,
+    acc_claim: null
+  };
+
+  let selectedPain = null;
+  let selectedSupport = null;
+
+  function selectPain(n) {
+    selectedPain = n;
+    document.querySelectorAll('.pain-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector(`.pain-btn[data-val="${n}"]`).classList.add('selected');
+  }
+
+  function selectSupport(val) {
+    selectedSupport = val;
+    document.getElementById('yn-yes').className = 'yn-btn' + (val === true ? ' selected-yes' : '');
+    document.getElementById('yn-no').className  = 'yn-btn' + (val === false ? ' selected-no' : '');
+  }
+
+  function showError(stepNum, msg) {
+    const el = document.getElementById(`err-${stepNum}`);
+    el.textContent = msg;
+    el.classList.add('visible');
+    setTimeout(() => el.classList.remove('visible'), 5000);
+  }
+
+  function updateProgress(step) {
+    for (let i = 1; i <= 3; i++) {
+      const el = document.getElementById(`ps-${i}`);
+      el.className = 'ps' + (i < step ? ' done' : i === step ? ' active' : '');
+    }
+  }
+
+  function goToStep(n) {
+    // Validate before advancing
+    if (n === 2) {
+      const name = document.getElementById('full_name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!name) { showError(1, 'Please enter your name.'); return; }
+      if (!phone) { showError(1, 'Please enter your WhatsApp number.'); return; }
+    }
+
+    if (n === 3) {
+      const anchor = document.getElementById('identity_anchor').value.trim();
+      if (!anchor) { showError(2, 'Please tell us what you want to get back to — this helps us support you.'); return; }
+      if (selectedPain === null) { showError(2, 'Please rate your current pain level.'); return; }
+      if (selectedSupport === null) { showError(2, 'Please answer the support question.'); return; }
+    }
+
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById(`step-${n}`).classList.add('active');
+    updateProgress(n);
+    window.scrollTo(0, 0);
+  }
+
+  async function submitForm() {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    const startDate = document.getElementById('programme_start').value || new Date().toISOString().split('T')[0];
+
+    const payload = {
+      full_name: document.getElementById('full_name').value.trim(),
+      phone_whatsapp: document.getElementById('phone').value.trim(),
+      email: document.getElementById('email').value.trim() || null,
+      programme_start_date: startDate,
+      identity_anchor: document.getElementById('identity_anchor').value.trim(),
+      baseline_pain: selectedPain,
+      social_support_flag: selectedSupport,
+      physio_name: document.getElementById('physio_name').value.trim() || null,
+      physio_clinic: document.getElementById('physio_clinic').value.trim() || null,
+      acc_claim_number: document.getElementById('acc_claim').value.trim() || null,
+      current_state: 'green',
+      is_active: true,
+      programme_duration_days: 14,
+      exercises_prescribed: 1
+    };
+
+    const { error } = await sb.from('users').insert(payload);
+
+    if (error) {
+      showError(3, 'Something went wrong. Please try again or contact your physio.');
+      console.error(error);
+      btn.disabled = false;
+      btn.textContent = 'I agree — start my programme';
+      return;
+    }
+
+    // Show success screen
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector('.progress-steps').style.display = 'none';
+    document.getElementById('success-screen').classList.add('visible');
+    window.scrollTo(0, 0);
+  }
+
+  // Default programme start to today
+  document.getElementById('programme_start').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
