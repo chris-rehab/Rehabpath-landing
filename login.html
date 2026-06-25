@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RehabPath · Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #151d2e;
+    --surface-2: #1a2438;
+    --orange: #f5a623;
+    --orange-dark: #d4891a;
+    --orange-glow: rgba(245,166,35,0.12);
+    --text: #f0f4ff;
+    --text-muted: #7a8aa8;
+    --border: rgba(245,166,35,0.2);
+    --border-subtle: rgba(255,255,255,0.07);
+    --error: #f87171;
+    --error-bg: rgba(248,113,113,0.08);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  /* Subtle grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,166,35,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,166,35,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+  }
+
+  /* Orange top accent line */
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 2rem; right: 2rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .logo-text {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .logo-text span { color: var(--orange); }
+
+  .logo-badge {
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-left: 4px;
+  }
+
+  h1 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+
+  .field {
+    margin-bottom: 1rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+  }
+
+  input {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  input:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px var(--orange-glow);
+  }
+
+  input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+  .btn {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.85rem;
+    background: var(--orange);
+    color: #0d1117;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn:hover { background: var(--orange-dark); }
+  .btn:active { transform: scale(0.99); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .error-msg {
+    display: none;
+    background: var(--error-bg);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 8px;
+    color: var(--error);
+    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+    line-height: 1.5;
+  }
+
+  .error-msg.visible { display: block; }
+
+  .footer-note {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .footer-note strong {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo-wrap">
+    <div class="logo-text">Rehab<span>Path</span></div>
+    <span class="logo-badge">Founder</span>
+  </div>
+
+  <h1>Sign in</h1>
+  <p class="subtitle">Founder access only. Patient data is protected behind authenticated sessions.</p>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="chris@rehabpath.co.nz" autocomplete="email"/>
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="••••••••••••" autocomplete="current-password"/>
+  </div>
+
+  <button class="btn" id="signin-btn" onclick="signIn()">Sign in</button>
+
+  <div class="error-msg" id="error-msg"></div>
+
+  <div class="footer-note">
+    <strong>Patient data security:</strong> All records are stored in an encrypted PostgreSQL database in AWS Sydney. Row-level security is enforced on every table.
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://crozjmckjputdzbjedrl.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyb3pqbWNranB1dGR6YmplZHJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMDAxMjAsImV4cCI6MjA5Nzc3NjEyMH0.K3hElbBcgA_ThI3QWPxPPjQWRu6uH9ARliB02IzDjQE';
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // If already logged in, go straight to dashboard
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (session) window.location.href = '/dashboard.html';
+  });
+
+  async function signIn() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const btn = document.getElementById('signin-btn');
+    const errorEl = document.getElementById('error-msg');
+
+    errorEl.classList.remove('visible');
+
+    if (!email || !password) {
+      showError('Please enter your email and password.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Signing in…';
+
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      showError('Sign in failed. Check your email and password and try again.');
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+      return;
+    }
+
+    // Success — go to dashboard
+    window.location.href = '/dashboard.html';
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = msg;
+    el.classList.add('visible');
+  }
+
+  // Allow Enter key to submit
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') signIn();
+  });
+</script>
+</body>
+</html>

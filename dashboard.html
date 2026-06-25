@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RehabPath · Founder Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #151d2e;
+    --surface-2: #1a2438;
+    --surface-3: #1e2a40;
+    --orange: #f5a623;
+    --orange-dark: #d4891a;
+    --orange-glow: rgba(245,166,35,0.12);
+    --text: #f0f4ff;
+    --text-muted: #7a8aa8;
+    --border: rgba(245,166,35,0.2);
+    --border-subtle: rgba(255,255,255,0.07);
+    --green: #10b981;
+    --green-bg: rgba(16,185,129,0.1);
+    --amber: #f59e0b;
+    --amber-bg: rgba(245,158,11,0.1);
+    --red: #ef4444;
+    --red-bg: rgba(239,68,68,0.1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .logo-text { font-size: 1.1rem; font-weight: 500; }
+  .logo-text span { color: var(--orange); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .nav-badge {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+
+  .signout-btn {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    transition: color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .signout-btn:hover { color: var(--text); }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+  }
+
+  .page-title {
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .page-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* ── SUMMARY STRIP ── */
+  .summary-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+  }
+
+  .summary-num {
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .summary-lbl {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  .num-green { color: var(--green); }
+  .num-amber { color: var(--amber); }
+  .num-red { color: var(--red); }
+
+  /* ── FLAGS ── */
+  .flags-section { margin-bottom: 1.5rem; }
+
+  .flag-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: rgba(245,158,11,0.07);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 8px;
+    padding: 0.875rem 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .flag-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .flag-text { color: var(--text); }
+  .flag-text strong { font-weight: 500; color: var(--amber); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.875rem;
+  }
+
+  /* ── PATIENT CARD ── */
+  .patient-card {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .patient-card:hover { border-color: rgba(245,166,35,0.15); }
+
+  .patient-card.state-amber { border-left: 3px solid var(--amber); }
+  .patient-card.state-red   { border-left: 3px solid var(--red); }
+  .patient-card.state-green { border-left: 3px solid var(--green); }
+
+  .patient-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .patient-name { font-size: 1.05rem; font-weight: 500; }
+
+  .state-badge {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-red   { background: var(--red-bg);   color: var(--red); }
+
+  .patient-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-item { }
+  .meta-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 2px; }
+  .meta-val { font-size: 0.9rem; font-weight: 400; }
+
+  .progress-wrap {
+    background: var(--surface-2);
+    border-radius: 4px;
+    height: 4px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 4px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--orange-dark), var(--orange));
+    transition: width 0.4s ease;
+  }
+
+  .intent-box {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 0.875rem 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .intent-lbl {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--orange);
+    margin-bottom: 0.3rem;
+  }
+
+  .intent-text { font-size: 0.875rem; color: var(--text); line-height: 1.5; }
+
+  /* ── LOG PANEL ── */
+  .log-panel {
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 1.125rem;
+    background: var(--surface-3);
+  }
+
+  .log-title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 0.875rem;
+  }
+
+  .log-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .log-lbl {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    width: 90px;
+    flex-shrink: 0;
+  }
+
+  .toggle-group { display: flex; gap: 0.35rem; }
+
+  .tog {
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-2);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .tog:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+  .tog.active-green { background: var(--green-bg); border-color: var(--green); color: var(--green); font-weight: 500; }
+  .tog.active-red   { background: var(--red-bg);   border-color: var(--red);   color: var(--red);   font-weight: 500; }
+  .tog.active-amber { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); font-weight: 500; }
+  .tog.active-blue  { background: rgba(99,179,237,0.1); border-color: #63b3ed; color: #63b3ed; font-weight: 500; }
+
+  .pain-input {
+    width: 64px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .pain-input:focus { border-color: var(--orange); }
+
+  .notes-input {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 300;
+    padding: 6px 10px;
+    outline: none;
+    resize: vertical;
+    min-height: 52px;
+    transition: border-color 0.2s;
+  }
+
+  .notes-input:focus { border-color: var(--orange); }
+  .notes-input::placeholder { color: var(--text-muted); opacity: 0.5; }
+
+  .log-btn {
+    width: 100%;
+    margin-top: 0.875rem;
+    padding: 0.75rem;
+    background: var(--orange);
+    color: #0d1117;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .log-btn:hover { background: var(--orange-dark); }
+  .log-btn:active { transform: scale(0.99); }
+  .log-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .log-success {
+    display: none;
+    margin-top: 0.625rem;
+    font-size: 0.8rem;
+    color: var(--green);
+    text-align: center;
+  }
+
+  .log-success.visible { display: block; }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    color: var(--text-muted);
+  }
+
+  .empty-state h3 { font-size: 1rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
+  .empty-state p { font-size: 0.875rem; line-height: 1.6; }
+  .empty-state a { color: var(--orange); text-decoration: none; }
+  .empty-state a:hover { text-decoration: underline; }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  /* ── ADD PATIENT BTN ── */
+  .add-patient-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--orange);
+    background: var(--orange-glow);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem 0.875rem;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .add-patient-btn:hover { background: rgba(245,166,35,0.18); }
+
+  @media (max-width: 600px) {
+    .summary-strip { grid-template-columns: repeat(2, 1fr); }
+    .patient-meta { gap: 1rem; }
+    nav { padding: 0.875rem 1rem; }
+    main { padding: 1.25rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo-text">Rehab<span>Path</span></div>
+  <div class="nav-right">
+    <span class="nav-badge">Founder · PoC</span>
+    <button class="signout-btn" onclick="signOut()">Sign out</button>
+  </div>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div>
+      <div class="page-title">Daily overview</div>
+      <div class="page-date" id="today-date"></div>
+    </div>
+    <a href="/onboard.html" class="add-patient-btn">+ Onboard patient</a>
+  </div>
+
+  <div id="dashboard-content">
+    <div class="loading">Loading patient data…</div>
+  </div>
+</main>
+
+<script>
+  const SUPABASE_URL = 'https://crozjmckjputdzbjedrl.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyb3pqbWNranB1dGR6YmplZHJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMDAxMjAsImV4cCI6MjA5Nzc3NjEyMH0.K3hElbBcgA_ThI3QWPxPPjQWRu6uH9ARliB02IzDjQE';
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── Auth guard ──
+  async function checkAuth() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      window.location.href = '/login.html';
+      return null;
+    }
+    return session;
+  }
+
+  async function signOut() {
+    await sb.auth.signOut();
+    window.location.href = '/login.html';
+  }
+
+  // ── Date display ──
+  function formatDate() {
+    const d = new Date();
+    return d.toLocaleDateString('en-NZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  document.getElementById('today-date').textContent = formatDate();
+
+  // ── Determine message intent from patient state and programme day ──
+  function getMessageIntent(patient, snapshot) {
+    const state = patient.current_state || 'green';
+    const day = snapshot ? snapshot.programme_day : null;
+    const streak = snapshot ? snapshot.streak_count : 0;
+    const pain = snapshot ? snapshot.avg_pain_score : null;
+    const habitRevWindow = snapshot ? snapshot.habit_reversion_flag : false;
+
+    if (pain !== null && pain >= 7) {
+      return { label: 'High pain', text: 'Check in on pain levels before anything else. Acknowledge discomfort, validate the effort, ask if they need to contact their physio.' };
+    }
+    if (habitRevWindow) {
+      return { label: 'Habit Reversion Window', text: `Reconnect to identity anchor: "${patient.identity_anchor}". Pain has resolved — remind them why the remaining exercises still matter.` };
+    }
+    if (state === 'red') {
+      return { label: 'Dropout risk', text: 'Missed 2+ days. Check in personally. Remove friction — can you reduce exercises today? Reconnect to the goal, not the programme.' };
+    }
+    if (state === 'amber') {
+      return { label: 'Low adherence', text: 'Completion dropping. Acknowledge the difficulty. Fogg prompt: reduce the ask, celebrate any completion.' };
+    }
+    if (streak && streak >= 3 && streak % 3 === 0) {
+      return { label: 'Streak milestone', text: `${streak}-day streak — acknowledge it specifically. Make it feel earned, not formulaic.` };
+    }
+    return { label: 'Standard check-in', text: 'Green patient. Keep momentum. Brief, positive, forward-looking message referencing their identity anchor.' };
+  }
+
+  // ── Render helpers ──
+  function stateBadge(state) {
+    const map = { green: 'badge-green', amber: 'badge-amber', red: 'badge-red' };
+    return `<span class="state-badge ${map[state] || 'badge-green'}">${state}</span>`;
+  }
+
+  function progressPct(patient) {
+    if (!patient.programme_start_date || !patient.programme_duration_days) return 0;
+    const start = new Date(patient.programme_start_date);
+    const today = new Date();
+    const daysPassed = Math.max(0, Math.floor((today - start) / 86400000));
+    return Math.min(100, Math.round((daysPassed / patient.programme_duration_days) * 100));
+  }
+
+  function programmeDay(patient) {
+    if (!patient.programme_start_date) return '—';
+    const start = new Date(patient.programme_start_date);
+    const today = new Date();
+    const day = Math.max(1, Math.floor((today - start) / 86400000) + 1);
+    return `${day} of ${patient.programme_duration_days || 14}`;
+  }
+
+  // ── Log state per card (held in memory) ──
+  const logState = {};
+
+  function initLogState(id) {
+    if (!logState[id]) {
+      logState[id] = { completed: null, pain: null, effort: null, notes: '' };
+    }
+  }
+
+  function setToggle(patientId, field, value, el, activeClass) {
+    logState[patientId][field] = value;
+    const group = el.closest('.toggle-group');
+    group.querySelectorAll('.tog').forEach(b => b.className = 'tog');
+    el.classList.add(activeClass);
+  }
+
+  // ── Submit log ──
+  async function logResponse(patientId) {
+    const state = logState[patientId];
+    const btn = document.getElementById(`log-btn-${patientId}`);
+    const successEl = document.getElementById(`log-success-${patientId}`);
+
+    if (state.completed === null) {
+      alert('Please mark whether the patient completed their exercises.');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    const today = new Date().toISOString().split('T')[0];
+
+    // Write completion event
+    const { error: evtErr } = await sb.from('events').insert({
+      user_id: patientId,
+      event_type: 'check_in_submitted',
+      payload: {
+        completed: state.completed,
+        pain_score: state.pain !== null ? parseFloat(state.pain) : null,
+        effort_quality: state.effort,
+        notes: state.notes || null,
+        logged_by: 'founder',
+        log_date: today
+      }
+    });
+
+    if (evtErr) {
+      alert('Error saving: ' + evtErr.message);
+      btn.disabled = false;
+      btn.textContent = 'Log response';
+      return;
+    }
+
+    // Upsert daily snapshot
+    const painVal = state.pain !== null ? parseFloat(state.pain) : null;
+    const { error: snapErr } = await sb.from('daily_snapshots').upsert({
+      user_id: patientId,
+      snapshot_date: today,
+      check_in_submitted: true,
+      exercises_completed: state.completed === 'yes' ? 1 : (state.completed === 'partial' ? 0 : 0),
+      exercises_prescribed: 1,
+      avg_pain_score: painVal,
+      effort_quality_signal: state.effort,
+      high_pain_flag: painVal !== null && painVal >= 7,
+      programme_day: parseInt(programmeDay({ programme_start_date: null })) || null
+    }, { onConflict: 'user_id,snapshot_date' });
+
+    if (snapErr) {
+      console.warn('Snapshot upsert warning:', snapErr.message);
+    }
+
+    // Update patient state based on completion
+    if (state.completed === 'no') {
+      await sb.from('users').update({ current_state: 'amber' }).eq('id', patientId);
+    } else if (state.completed === 'yes' && painVal !== null && painVal >= 7) {
+      await sb.from('users').update({ current_state: 'amber' }).eq('id', patientId);
+    }
+
+    btn.textContent = 'Logged ✓';
+    successEl.textContent = 'Response logged to Supabase at ' + new Date().toLocaleTimeString('en-NZ');
+    successEl.classList.add('visible');
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Log response';
+    }, 3000);
+  }
+
+  // ── Build patient card HTML ──
+  function buildPatientCard(patient, snapshot, flags) {
+    initLogState(patient.id);
+    const intent = getMessageIntent(patient, snapshot);
+    const pct = progressPct(patient);
+    const day = programmeDay(patient);
+    const state = patient.current_state || 'green';
+    const streak = snapshot ? (snapshot.streak_count || 0) : 0;
+    const pain = snapshot ? (snapshot.avg_pain_score || '—') : '—';
+    const pendingFlags = flags.filter(f => !f.resolved);
+
+    return `
+    <div class="patient-card state-${state}" id="card-${patient.id}">
+      <div class="patient-top">
+        <div class="patient-name">${patient.full_name}</div>
+        ${stateBadge(state)}
+      </div>
+
+      <div class="patient-meta">
+        <div class="meta-item"><div class="meta-lbl">Programme day</div><div class="meta-val">${day}</div></div>
+        <div class="meta-item"><div class="meta-lbl">Streak</div><div class="meta-val">${streak} day${streak !== 1 ? 's' : ''}</div></div>
+        <div class="meta-item"><div class="meta-lbl">Last pain</div><div class="meta-val">${pain}/10</div></div>
+        <div class="meta-item"><div class="meta-lbl">Physio</div><div class="meta-val">${patient.physio_clinic || '—'}</div></div>
+        ${patient.acc_claim_number ? `<div class="meta-item"><div class="meta-lbl">ACC claim</div><div class="meta-val">${patient.acc_claim_number}</div></div>` : ''}
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-bar" style="width:${pct}%"></div>
+      </div>
+
+      <div class="intent-box">
+        <div class="intent-lbl">Today's message intent — ${intent.label}</div>
+        <div class="intent-text">${intent.text}</div>
+      </div>
+
+      ${pendingFlags.length > 0 ? pendingFlags.map(f => `
+        <div class="flag-item" style="margin-bottom:0.75rem;">
+          <div class="flag-icon">${f.severity === 'critical' ? '🚨' : '⚠️'}</div>
+          <div class="flag-text"><strong>${f.rule_name}</strong> — ${f.flag_reason}</div>
+        </div>`).join('') : ''}
+
+      <div class="log-panel">
+        <div class="log-title">Log today's response</div>
+
+        <div class="log-row">
+          <div class="log-lbl">Completed?</div>
+          <div class="toggle-group">
+            <button class="tog" onclick="setToggle('${patient.id}', 'completed', 'yes', this, 'active-green')">Yes</button>
+            <button class="tog" onclick="setToggle('${patient.id}', 'completed', 'partial', this, 'active-amber')">Partial</button>
+            <button class="tog" onclick="setToggle('${patient.id}', 'completed', 'no', this, 'active-red')">No</button>
+          </div>
+        </div>
+
+        <div class="log-row">
+          <div class="log-lbl">Pain (0–10)</div>
+          <input class="pain-input" type="number" min="0" max="10" step="0.5" placeholder="—"
+            onchange="logState['${patient.id}'].pain = this.value"/>
+        </div>
+
+        <div class="log-row">
+          <div class="log-lbl">Effort</div>
+          <div class="toggle-group">
+            <button class="tog" onclick="setToggle('${patient.id}', 'effort', 'too_easy', this, 'active-blue')">Too easy</button>
+            <button class="tog" onclick="setToggle('${patient.id}', 'effort', 'about_right', this, 'active-green')">About right</button>
+            <button class="tog" onclick="setToggle('${patient.id}', 'effort', 'too_hard', this, 'active-red')">Too hard</button>
+          </div>
+        </div>
+
+        <div class="log-row" style="align-items:flex-start; flex-direction:column; gap:0.4rem;">
+          <div class="log-lbl">Notes</div>
+          <textarea class="notes-input" placeholder="What did the patient say? Any context worth capturing…"
+            onchange="logState['${patient.id}'].notes = this.value"></textarea>
+        </div>
+
+        <button class="log-btn" id="log-btn-${patient.id}" onclick="logResponse('${patient.id}')">
+          Log response → Supabase
+        </button>
+        <div class="log-success" id="log-success-${patient.id}"></div>
+      </div>
+    </div>`;
+  }
+
+  // ── Main render ──
+  async function renderDashboard() {
+    const session = await checkAuth();
+    if (!session) return;
+
+    const content = document.getElementById('dashboard-content');
+
+    // Fetch active patients
+    const { data: patients, error: pErr } = await sb
+      .from('users')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: true });
+
+    if (pErr) {
+      content.innerHTML = `<div class="empty-state"><h3>Error loading patients</h3><p>${pErr.message}</p></div>`;
+      return;
+    }
+
+    if (!patients || patients.length === 0) {
+      content.innerHTML = `
+        <div class="empty-state">
+          <h3>No active patients yet</h3>
+          <p>Onboard your first patient at <a href="/onboard.html">rehabpath.co.nz/onboard</a> to get started.</p>
+        </div>`;
+      return;
+    }
+
+    // Fetch today's snapshots and open flags for all patients
+    const today = new Date().toISOString().split('T')[0];
+    const patientIds = patients.map(p => p.id);
+
+    const { data: snapshots } = await sb
+      .from('daily_snapshots')
+      .select('*')
+      .in('user_id', patientIds)
+      .eq('snapshot_date', today);
+
+    const { data: flags } = await sb
+      .from('rule_flags')
+      .select('*')
+      .in('user_id', patientIds)
+      .eq('resolved', false);
+
+    // Summary counts
+    const counts = { green: 0, amber: 0, red: 0 };
+    patients.forEach(p => { if (counts[p.current_state] !== undefined) counts[p.current_state]++; });
+
+    // Build top-level flags strip
+    const allFlags = flags || [];
+    const criticalFlags = allFlags.filter(f => f.severity === 'critical');
+
+    let html = `
+      <div class="summary-strip">
+        <div class="summary-card"><div class="summary-num num-green">${counts.green}</div><div class="summary-lbl">Green</div></div>
+        <div class="summary-card"><div class="summary-num num-amber">${counts.amber}</div><div class="summary-lbl">Amber</div></div>
+        <div class="summary-card"><div class="summary-num num-red">${counts.red}</div><div class="summary-lbl">Red</div></div>
+        <div class="summary-card"><div class="summary-num">${patients.length}</div><div class="summary-lbl">Total</div></div>
+      </div>`;
+
+    if (criticalFlags.length > 0) {
+      html += `<div class="flags-section">`;
+      criticalFlags.forEach(f => {
+        const patient = patients.find(p => p.id === f.user_id);
+        html += `
+          <div class="flag-item">
+            <div class="flag-icon">🚨</div>
+            <div class="flag-text"><strong>${patient ? patient.full_name : 'Patient'}</strong> — ${f.flag_reason}</div>
+          </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Sort: red first, then amber, then green
+    const sorted = [...patients].sort((a, b) => {
+      const order = { red: 0, amber: 1, green: 2 };
+      return (order[a.current_state] || 2) - (order[b.current_state] || 2);
+    });
+
+    html += `<div class="section-label">Active patients — ${today}</div>`;
+
+    sorted.forEach(patient => {
+      const snapshot = (snapshots || []).find(s => s.user_id === patient.id) || null;
+      const patientFlags = (flags || []).filter(f => f.user_id === patient.id);
+      html += buildPatientCard(patient, snapshot, patientFlags);
+    });
+
+    content.innerHTML = html;
+  }
+
+  renderDashboard();
+</script>
+</body>
+</html>
