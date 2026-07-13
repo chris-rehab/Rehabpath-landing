@@ -515,6 +515,14 @@
     }
   }
 
+  function normalizePhone(raw) {
+    let p = raw.replace(/[\s\-()]/g, '');      // strip spaces, dashes, brackets
+    if (p.startsWith('00')) p = '+' + p.slice(2);
+    if (p.startsWith('0')) p = '+64' + p.slice(1);  // NZ default: drop leading 0, add country code
+    if (!p.startsWith('+')) p = '+' + p;
+    return p;
+  }
+
   function goToStep(n) {
     // Validate before advancing
     if (n === 2) {
@@ -522,6 +530,7 @@
       const phone = document.getElementById('phone').value.trim();
       if (!name) { showError(1, 'Please enter your name.'); return; }
       if (!phone) { showError(1, 'Please enter your WhatsApp number.'); return; }
+      if (!/^\+\d{8,15}$/.test(normalizePhone(phone))) { showError(1, 'Please check your WhatsApp number format.'); return; }
     }
 
     if (n === 3) {
@@ -546,7 +555,7 @@
 
     const payload = {
       full_name: document.getElementById('full_name').value.trim(),
-      phone_whatsapp: document.getElementById('phone').value.trim(),
+      phone_whatsapp: normalizePhone(document.getElementById('phone').value.trim()),
       email: document.getElementById('email').value.trim() || null,
       programme_start_date: startDate,
       identity_anchor: document.getElementById('identity_anchor').value.trim(),
