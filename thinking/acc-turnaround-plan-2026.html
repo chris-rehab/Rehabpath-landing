@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACC's 2026/27 Turnaround Plan — RehabPath Perspectives</title>
+<meta name="description" content="A closer read of ACC's 2026/27 turnaround plan — and why 'identify clients at risk of delayed recovery earlier' is the line MSK providers should pay attention to. By Chris Revans, founder of RehabPath.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #151d2e;
+    --surface-2: #1a2438;
+    --orange: #f5a623;
+    --orange-dark: #d4891a;
+    --orange-glow: rgba(245,166,35,0.15);
+    --text: #f0f4ff;
+    --text-muted: #7a8aa8;
+    --text-body: #c8d3e8;
+    --border: rgba(245,166,35,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(13,17,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(245,166,35,0.15);
+  }
+  .logo img { height: 40px; width: auto; display: block; }
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--orange); }
+  nav a.active { color: var(--orange); }
+  .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+  .btn {
+    display: inline-block;
+    background: var(--orange);
+    color: #0d1117;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .btn:hover { background: var(--orange-dark); transform: translateY(-1px); color: #0d1117; }
+
+  .article-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 9rem 2rem 6rem;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .breadcrumb a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .breadcrumb a:hover { color: var(--orange); }
+  .breadcrumb span { opacity: 0.4; }
+
+  .article-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: var(--orange-glow);
+    margin-bottom: 1.75rem;
+  }
+
+  .article-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4.5vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  .article-subtitle {
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+  }
+
+  .article-byline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 4rem;
+  }
+  .byline-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--orange);
+    flex-shrink: 0;
+  }
+  .byline-info { flex: 1; }
+  .byline-name { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+  .byline-meta { font-size: 0.8rem; color: var(--text-muted); }
+  .byline-readtime {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 0.3rem 0.8rem;
+    background: var(--surface);
+    border-radius: 100px;
+  }
+
+  .article-body {
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text-body);
+  }
+
+  .article-body p { margin-bottom: 1.6rem; }
+
+  .article-body h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 3.5rem 0 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(245,166,35,0.15);
+  }
+
+  .article-body strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 8px 8px 0;
+    padding: 1.5rem 1.75rem;
+    margin: 2.5rem 0;
+  }
+  .callout-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.6rem;
+  }
+  .callout p {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  sup {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    color: var(--orange);
+    vertical-align: super;
+    line-height: 0;
+  }
+
+  .references {
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .references h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1.5rem;
+  }
+  .references ol {
+    list-style: none;
+    counter-reset: ref-counter;
+  }
+  .references li {
+    counter-increment: ref-counter;
+    display: flex;
+    gap: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 0.9rem;
+  }
+  .references li::before {
+    content: counter(ref-counter) ".";
+    color: var(--orange);
+    font-weight: 500;
+    flex-shrink: 0;
+    min-width: 1.2rem;
+  }
+  .references em { font-style: italic; color: var(--text-muted); }
+  .references a { color: var(--orange); text-decoration: none; }
+  .references a:hover { text-decoration: underline; }
+
+  .author-bio {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid rgba(245,166,35,0.1);
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-start;
+  }
+  .bio-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--orange);
+    flex-shrink: 0;
+  }
+  .bio-text { font-family: 'DM Sans', sans-serif; }
+  .bio-name { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 0.3rem; }
+  .bio-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+
+  .article-cta {
+    margin-top: 3.5rem;
+    padding: 2.5rem;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .article-cta h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .article-cta p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  .series-link {
+    display: block;
+    margin-top: 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 1.5rem;
+    transition: color 0.2s;
+  }
+  .series-link:hover { color: var(--orange); }
+
+  .copyright {
+    margin-top: 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+    line-height: 1.6;
+  }
+
+  footer {
+    text-align: center;
+    padding: 3rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 4rem;
+  }
+  footer p { margin-bottom: 0.3rem; }
+
+  @media (max-width: 680px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .article-wrap { padding: 7rem 1.25rem 4rem; }
+    .article-title { font-size: 2rem; }
+    .author-bio { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><img src="/rehabpath_logo_transparent.png" alt="RehabPath"></a>
+  <div class="nav-links">
+    <a href="/#how">How it works</a>
+    <a href="/#for-who">Who it's for</a>
+    <a href="/#about">About</a>
+    <a href="/thinking/" class="active">Perspectives</a>
+    <a href="/#contact">Get in touch</a>
+    <a href="https://quiz.rehabpath.co.nz" target="_blank" class="btn">Take the assessment →</a>
+  </div>
+</nav>
+
+<div class="article-wrap">
+
+  <div class="breadcrumb">
+    <a href="/">Home</a>
+    <span>/</span>
+    <a href="/thinking/">Perspectives</a>
+    <span>/</span>
+    <span>ACC's 2026/27 Turnaround Plan</span>
+  </div>
+
+  <span class="article-tag">ACC &amp; Funding · Opinion</span>
+
+  <h1 class="article-title">What ACC's 2026/27 Turnaround Plan Actually Tells MSK Providers</h1>
+  <p class="article-subtitle">A closer read of ACC's own numbers — and why "identify clients at risk of delayed recovery earlier" is the line worth sitting with</p>
+
+  <div class="article-byline">
+    <div class="byline-avatar">CR</div>
+    <div class="byline-info">
+      <div class="byline-name">Chris Revans</div>
+      <div class="byline-meta">Founder, RehabPath Ltd · July 2026</div>
+    </div>
+    <div class="byline-readtime">5 min read</div>
+  </div>
+
+  <div class="article-body">
+
+    <p>ACC has published its turnaround plan for 2026/27 — a board-level document setting out the actions and targets it expects to drive it toward "best-ever performance" by 2030.<sup>1</sup> It's a wider document than the Secondary Care redesign materials this site covered a few months back, but it points in the same direction, and it's worth a slower read than most sector documents get.</p>
+
+    <p>The headline framing is financial, and it's stated plainly: spending on rehabilitation and treatment support has grown from $2.3 billion to $5.0 billion over the last ten years — well above demand, population and inflation growth.<sup>1</sup> That single line is doing a lot of work. It's the justification for almost everything else in the plan, and it tells providers something useful about the conversation ACC is going to want to have: not "are you delivering care," but "is the care you're delivering worth what it costs."</p>
+
+    <h2>The line that matters most</h2>
+
+    <p>Buried in the plan's second strategic priority — timely return to work and independence — is an action that reads, on the surface, like standard case-management language: identify clients at risk of delayed recovery earlier, so the right support is provided at the right time.<sup>1</sup></p>
+
+    <p>Read against everything else in the plan, this is a bigger statement than it looks. ACC isn't just saying it wants better outcomes. It's saying it wants to know <em>before</em> a recovery stalls, not after. That's a shift from outcome reporting to leading-indicator reporting — and it's a much harder thing to produce.</p>
+
+    <p>Most of what the sector currently measures is lagging. A missed appointment, a re-presentation, a claim that runs long — these are all signals that show up after the fact, at the point where recovery has already gone off track. What ACC is describing is a different kind of evidence: something that flags drift while there's still time to intervene. That's precisely the layer this site has argued is missing from most rehabilitation tools — the space between session completion and clinical outcome, where adherence quietly erodes before anyone notices.<sup>2</sup></p>
+
+    <div class="callout">
+      <div class="callout-label">Why this is harder than it sounds</div>
+      <p>Completion data tells a provider what a patient did. It doesn't tell them what a patient is about to stop doing. Producing the second kind of signal requires tracking behaviour continuously between appointments — not just checking in on it at the next one.</p>
+    </div>
+
+    <h2>The rest of the plan points the same way</h2>
+
+    <p>Two other actions reinforce the same direction of travel. ACC wants to expand automation, digital integration and AI to reduce manual case-management work, and it wants a more complete, connected view of the client across their claim.<sup>1</sup> Neither is aimed at rehabilitation providers directly — they're internal ACC initiatives — but they describe an organisation building the infrastructure to consume structured data at scale, not narrative case notes.</p>
+
+    <p>The plan also reports that the long-term claims pool has fallen to 24,454 clients, down from a projected 26,180, and that 92% of clients are no longer receiving income support one year after injury.<sup>1</sup> ACC attributes the improvement to fewer people with less serious injuries relying on support long-term — precisely the client group where adherence, not clinical complexity, is usually the deciding factor in how a recovery plays out.</p>
+
+    <h2>What hasn't changed</h2>
+
+    <p>To be clear about what this document is and isn't: it's a scheme-wide strategic plan, not a procurement release. No KPI framework, reporting specification, or technical integration requirement has been published for the Secondary Care redesign specifically — those are still expected in stages, starting with a market briefing in February 2027 and detailed further in the RFP that follows.<sup>3</sup> This plan doesn't move that timeline. What it does is confirm the underlying logic hasn't shifted either — if anything, it's stated more explicitly here than in the sector-specific materials released so far.</p>
+
+    <p>The practical takeaway for providers is the same one this site has made before, just with a sharper edge on it now: the gap between "ACC wants earlier signals of delayed recovery" being clear and the specifics of how that gets measured being published is exactly the window in which it's worth having started building that evidence base independently — rather than waiting for the requirement to be handed down.</p>
+
+  </div>
+
+  <div class="references">
+    <h3>References</h3>
+    <ol>
+      <li>Accident Compensation Corporation (2026). <em><a href="https://www.acc.co.nz/assets/corporate-documents/Turnaround-plan2026-27.pdf" target="_blank" rel="noopener">ACC's turnaround plan to deliver better outcomes for injured New Zealanders: 2026/27</a></em>. Published 29 July 2026 — see also the <a href="https://www.acc.co.nz/newsroom/stories/acc-releases-202627-turnaround-plan" target="_blank" rel="noopener">newsroom release</a>. Figures are provisional year-end results, subject to finalisation of claims liability valuation and external audit.</li>
+      <li>See "The Behaviour Gap" and "Why Your Patient Stopped," RehabPath Perspectives.</li>
+      <li>RehabPath ACC Procurement &amp; Contact Log, correspondence with Willa Jones, Portfolio Advisor – Surgery and Imaging, ACC (2 July 2026).</li>
+    </ol>
+  </div>
+
+  <div class="author-bio">
+    <div class="bio-avatar">CR</div>
+    <div class="bio-text">
+      <div class="bio-name">Chris Revans</div>
+      <div class="bio-desc">Founder of RehabPath Ltd, a behavioural adherence platform focused on patient adherence in musculoskeletal rehabilitation. B.A. (Hons) Sports Studies · PSPO I · RehabPath is currently in proof-of-concept development in New Zealand.</div>
+    </div>
+  </div>
+
+  <div class="article-cta">
+    <h3>Where does your practice sit today?</h3>
+    <p>A short, evidence-based scorecard to see how your current adherence approach stacks up — and where the gaps are.</p>
+    <a href="/scorecard" class="btn">Take the scorecard →</a>
+  </div>
+
+  <a href="/thinking/acc-data-transparency.html" class="series-link">← ACC Data &amp; Transparency: what the sector should be listening for</a>
+
+  <p class="copyright">© 2026 Chris Revans / RehabPath Ltd. All rights reserved.</p>
+
+</div>
+
+<footer>
+  <div style="margin-bottom: 0.75rem;">
+    <img src="/rehabpath_logo_transparent.png" alt="RehabPath" style="height:40px; width:auto; opacity:0.8;">
+  </div>
+  <p>Early stage · New Zealand · Built to close the behaviour gap</p>
+  <p style="font-size:0.75rem;">© 2026 RehabPath</p>
+</footer>
+
+</body>
+</html>
