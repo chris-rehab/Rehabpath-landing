@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RehabPath — Recovery That Sticks</title>
+<meta name="description" content="RehabPath is a behavioural coaching platform that keeps patients engaged with their physiotherapy programme — through the critical window when motivation fades and adherence fails.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #151d2e;
+    --surface-2: #1a2438;
+    --orange: #f5a623;
+    --orange-dark: #d4891a;
+    --orange-glow: rgba(245,166,35,0.15);
+    --text: #f0f4ff;
+    --text-muted: #9aa9c4;
+    --border: rgba(245,166,35,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: rgba(13,17,23,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(245,166,35,0.1);
+  }
+
+  .logo img { height: 40px; width: auto; display: block; }
+
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--orange); }
+  .nav-links { display: flex; gap: 2.5rem; align-items: center; }
+
+  .btn {
+    display: inline-block;
+    background: var(--orange);
+    color: #0d1117;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.01em;
+  }
+  .btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--orange);
+    border: 1.5px solid var(--orange);
+  }
+  .btn-outline:hover { background: var(--orange-glow); transform: translateY(-1px); }
+  .btn-lg { padding: 1rem 2.2rem; font-size: 1rem; border-radius: 10px; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 3rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -20%; right: -10%;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--orange), transparent);
+    opacity: 0.3;
+  }
+  .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+    width: 100%;
+  }
+  .hero-label {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1.5rem;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: var(--orange-glow);
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+  h1 em { font-style: normal; color: var(--orange); }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  /* ── PHONE MOCKUP ── */
+  .phone-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .phone-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -40px;
+    background: radial-gradient(circle at center, rgba(245,166,35,0.07), transparent 70%);
+    pointer-events: none;
+  }
+  .phone {
+    width: 260px;
+    background: var(--surface);
+    border-radius: 36px;
+    border: 1.5px solid rgba(245,166,35,0.25);
+    padding: 2rem 1.4rem;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .phone-header {
+    background: #0d1117;
+    border-radius: 10px;
+    padding: 0.6rem 0.8rem;
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  .phone-tab { color: var(--text-muted); padding: 0.2rem 0.5rem; border-radius: 6px; }
+  .phone-tab.active { background: var(--orange); color: #0d1117; }
+  .phone-progress { display: flex; gap: 4px; margin-bottom: 1.2rem; }
+  .prog-bar { height: 3px; border-radius: 2px; flex: 1; background: var(--surface-2); }
+  .prog-bar.done { background: var(--orange); }
+  .phone-card {
+    background: var(--surface-2);
+    border-radius: 16px;
+    padding: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+  .phone-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+  .phone-card p { font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; }
+  .msg-bubble {
+    background: var(--surface-2);
+    border-radius: 12px 12px 12px 4px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.75rem;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    border-left: 2px solid var(--orange);
+    line-height: 1.5;
+  }
+  .phone-btn {
+    background: var(--orange);
+    color: #0d1117;
+    border-radius: 10px;
+    padding: 0.7rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 3rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 1.2rem;
+  }
+  .section-sub {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 600px;
+    line-height: 1.8;
+    margin-bottom: 3.5rem;
+  }
+
+  /* ── PROBLEM ── */
+  .problem {
+    background: var(--surface);
+    border-top: 1px solid rgba(245,166,35,0.1);
+    border-bottom: 1px solid rgba(245,166,35,0.1);
+  }
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid rgba(245,166,35,0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--orange);
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--orange);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .stat-label { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+  .stat-source { margin-top: 1rem; font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; }
+
+  /* ── BEHAVIOUR GAP VISUAL ── */
+  .gap-visual {
+    background: var(--bg);
+    border: 1px solid rgba(245,166,35,0.15);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  .gap-title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+  .gap-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .gap-row-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    width: 70px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .gap-bar-wrap {
+    flex: 1;
+    height: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+  }
+  .gap-bar { height: 100%; border-radius: 5px; position: absolute; left: 0; top: 0; }
+  .bar-pain    { background: #E05C5C; width: 32%; }
+  .bar-healing { background: var(--orange); width: 85%; opacity: 0.7; }
+  .bar-rehab-solid { background: #52C97A; width: 32%; }
+  .bar-rehab-fade  { background: #52C97A; opacity: 0.3; left: 32%; width: 18%; }
+  .gap-rows { position: relative; }
+  .gap-zone {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: calc(86px + (100% - 86px) * 0.32);
+    right: calc((100% - 86px) * 0.15);
+    background: rgba(245,166,35,0.07);
+    border-left: 2px dashed rgba(245,166,35,0.3);
+    border-right: 2px dashed rgba(245,166,35,0.3);
+    pointer-events: none;
+  }
+  .gap-caption {
+    font-size: 0.75rem;
+    color: var(--orange);
+    margin-top: 1.2rem;
+    font-style: italic;
+  }
+  .gap-ticks {
+    display: flex;
+    justify-content: space-between;
+    margin-left: 86px;
+    margin-bottom: 0.5rem;
+  }
+  .gap-ticks span { font-size: 0.75rem; color: var(--text-muted); }
+
+  /* ── HOW IT WORKS ── */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; counter-reset: step; }
+  .step {
+    position: relative;
+    padding: 2rem;
+    background: var(--surface);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .step::before {
+    counter-increment: step;
+    content: '0' counter(step);
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: rgba(245,166,35,0.15);
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+    line-height: 1;
+  }
+  .step-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+  .step h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
+  .step p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+  /* ── RIGHT NOW NOTE ── */
+  .now-note {
+    margin-top: 3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.8rem 2rem;
+  }
+  .now-note .now-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+  .now-note p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.75; }
+  .now-note p strong { color: var(--text); font-weight: 500; }
+
+  /* ── PRODUCT CAROUSEL ── */
+  .carousel-section {
+    background: var(--surface);
+    border-top: 1px solid rgba(245,166,35,0.1);
+    border-bottom: 1px solid rgba(245,166,35,0.1);
+  }
+  .carousel-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.4rem 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .carousel-note strong { color: var(--orange); font-weight: 500; }
+  .carousel {
+    position: relative;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .carousel-frame {
+    background: var(--bg);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+  }
+  .carousel-slides { position: relative; }
+  .carousel-slide {
+    display: none;
+    animation: fadeSlide 0.4s ease;
+  }
+  .carousel-slide.active { display: block; }
+  .carousel-slide img { display: block; width: 100%; height: auto; }
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .carousel-caption {
+    padding: 1.4rem 1.8rem;
+    border-top: 1px solid rgba(245,166,35,0.12);
+  }
+  .carousel-caption h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .carousel-caption p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+  }
+  .carousel-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(245,166,35,0.25);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .carousel-dot.active { background: var(--orange); transform: scale(1.25); }
+  .carousel-arrow {
+    position: absolute;
+    top: 38%;
+    transform: translateY(-50%);
+    background: rgba(13,17,23,0.7);
+    border: 1px solid var(--border);
+    color: var(--orange);
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .carousel-arrow:hover { background: rgba(245,166,35,0.15); }
+  .carousel-arrow.prev { left: -52px; }
+  .carousel-arrow.next { right: -52px; }
+  @media (max-width: 880px) {
+    .carousel-arrow.prev { left: 8px; }
+    .carousel-arrow.next { right: 8px; }
+  }
+
+  /* ── FOR WHOM ── */
+  .audience {
+    background: var(--surface);
+    border-top: 1px solid rgba(245,166,35,0.1);
+    border-bottom: 1px solid rgba(245,166,35,0.1);
+  }
+  .audience-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+  .audience-card {
+    background: var(--bg);
+    border: 1px solid rgba(245,166,35,0.15);
+    border-radius: 16px;
+    padding: 2.5rem;
+    transition: border-color 0.2s;
+  }
+  .audience-card:hover { border-color: rgba(245,166,35,0.4); }
+  .audience-card .tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.25rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: var(--orange-glow);
+  }
+  .audience-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+  .audience-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+  .benefit-list { list-style: none; margin-top: 1.2rem; }
+  .benefit-list li {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    padding: 0.4rem 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+  }
+  .benefit-list li::before { content: '→'; color: var(--orange); flex-shrink: 0; }
+
+  /* ── SCORECARD NUDGE ── */
+  .scorecard-nudge {
+    margin-top: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 1.8rem;
+  }
+  .scorecard-nudge .nudge-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .scorecard-nudge p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1rem; }
+  .scorecard-nudge a {
+    color: var(--orange);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .scorecard-nudge a:hover { text-decoration: underline; }
+
+  /* ── THINKING / ARTICLES ── */
+  .thinking {
+    border-top: 1px solid rgba(245,166,35,0.1);
+  }
+  .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .article-card {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, transform 0.15s;
+    display: block;
+  }
+  .article-card:hover { border-color: rgba(245,166,35,0.3); transform: translateY(-2px); }
+  .article-tag {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+  .article-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.7rem;
+  }
+  .article-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.65; }
+  .article-read-more {
+    display: inline-block;
+    margin-top: 1.2rem;
+    font-size: 0.8rem;
+    color: var(--orange);
+    font-weight: 500;
+  }
+
+  /* ── ABOUT ── */
+  .about {
+    border-top: 1px solid rgba(245,166,35,0.1);
+    border-bottom: 1px solid rgba(245,166,35,0.1);
+    background: var(--surface);
+  }
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 5rem;
+    align-items: start;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .about-left { position: sticky; top: 7rem; }
+  .avatar-ring {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 2px solid var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--orange);
+    background: var(--orange-glow);
+    margin-bottom: 1.5rem;
+  }
+  .about-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .about-title { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.4rem; line-height: 1.5; }
+  .about-creds { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .about-creds li { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 0.5rem; align-items: flex-start; line-height: 1.4; }
+  .about-creds li::before { content: '—'; color: var(--orange); flex-shrink: 0; }
+  .story-block { margin-bottom: 2rem; }
+  .story-block p { font-size: 1rem; color: var(--text-muted); line-height: 1.85; margin-bottom: 1rem; }
+  .story-block p:last-child { margin-bottom: 0; }
+  .story-block p strong { color: var(--text); font-weight: 500; }
+  .injury-timeline {
+    background: var(--bg);
+    border: 1px solid rgba(245,166,35,0.15);
+    border-radius: 12px;
+    padding: 1.5rem 1.8rem;
+    margin: 2rem 0;
+    position: relative;
+  }
+  .injury-timeline::before {
+    content: '';
+    position: absolute;
+    left: 1.8rem; top: 3.5rem; bottom: 1.5rem;
+    width: 1px;
+    background: rgba(245,166,35,0.2);
+  }
+  .timeline-event { display: flex; gap: 1.2rem; margin-bottom: 1.2rem; position: relative; }
+  .timeline-event:last-child { margin-bottom: 0; }
+  .tl-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--orange); flex-shrink: 0; margin-top: 0.45rem; position: relative; z-index: 1; }
+  .tl-dot.muted { background: var(--text-muted); opacity: 0.4; }
+  .tl-date { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.2rem; }
+  .tl-date.muted { color: var(--text-muted); }
+  .tl-text { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+  .tl-text strong { color: var(--text); font-weight: 500; }
+
+  /* ── CONTACT ── */
+  .form-wrap {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 20px;
+    padding: 2.5rem;
+  }
+  .form-group { margin-bottom: 1.2rem; }
+  label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); margin-bottom: 0.4rem; letter-spacing: 0.03em; }
+  input, select, textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: rgba(245,166,35,0.5); }
+  select option { background: var(--surface); }
+  textarea { resize: vertical; min-height: 100px; }
+  .form-submit { width: 100%; margin-top: 0.5rem; padding: 0.9rem; font-size: 1rem; }
+  .feedback-note {
+    background: var(--surface-2);
+    border: 1px solid rgba(245,166,35,0.12);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-top: 1.2rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .feedback-note strong { color: var(--text); font-weight: 500; }
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 2rem;
+    color: var(--orange);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+  }
+
+  /* ── ORANGE RULE ── */
+  .orange-rule { width: 48px; height: 3px; background: var(--orange); border-radius: 2px; margin-bottom: 1.5rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 2.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  footer p { font-size: 0.8rem; color: var(--text-muted); }
+  .footer-logo img { height: 40px; width: auto; opacity: 0.85; }
+
+  /* ── ANIMATIONS ── */
+  .fade-up { opacity: 0; transform: translateY(24px); animation: fadeUp 0.7s ease forwards; }
+  .fade-up:nth-child(2) { animation-delay: 0.1s; }
+  .fade-up:nth-child(3) { animation-delay: 0.2s; }
+  @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .nav-links a:not(.btn) { display: none; }
+    .hero { padding: 7rem 1.5rem 4rem; }
+    .hero-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .phone-wrap { order: -1; }
+    .phone { width: 230px; }
+    section { padding: 4rem 1.5rem; }
+    .stat-grid, .steps, .articles-grid { grid-template-columns: 1fr; }
+    .audience-grid { grid-template-columns: 1fr; }
+    .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .about-left { position: static; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo"><img src="/rehabpath_logo_transparent.png" alt="RehabPath"></a>
+  <div class="nav-links">
+    <a href="#how">How it works</a>
+    <a href="#for-who">Who it's for</a>
+    <a href="#thinking">Perspectives</a>
+    <a href="#about">About</a>
+    <a href="#contact">Get in touch</a>
+    <a href="https://quiz.rehabpath.co.nz" target="_blank" class="btn">Take the assessment →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-label fade-up">Early stage · New Zealand</div>
+      <h1 class="fade-up">Recovery doesn't stop <em>when the pain does.</em></h1>
+      <p class="hero-sub fade-up">RehabPath is a behavioural coaching platform that keeps patients engaged with their physiotherapy programme — through the critical window when motivation fades and adherence fails.</p>
+      <div class="hero-actions fade-up">
+        <a href="https://quiz.rehabpath.co.nz" target="_blank" class="btn btn-lg">Find your adherence type →</a>
+        <a href="#contact" class="btn btn-outline btn-lg">Get support building it →</a>
+      </div>
+    </div>
+    <div class="phone-wrap">
+      <div class="gap-visual" style="margin-top:0; width:100%;">
+        <div class="gap-title">Recovery timeline — where the behaviour gap opens</div>
+        <div class="gap-ticks">
+          <span>Week 1</span><span>Week 4</span><span>Week 8</span><span>Week 12</span>
+        </div>
+        <div class="gap-rows">
+          <div class="gap-zone"></div>
+          <div class="gap-row">
+            <div class="gap-row-label">Pain</div>
+            <div class="gap-bar-wrap"><div class="gap-bar bar-pain"></div></div>
+          </div>
+          <div class="gap-row">
+            <div class="gap-row-label">Healing</div>
+            <div class="gap-bar-wrap"><div class="gap-bar bar-healing"></div></div>
+          </div>
+          <div class="gap-row">
+            <div class="gap-row-label">Adherence</div>
+            <div class="gap-bar-wrap">
+              <div class="gap-bar bar-rehab-solid"></div>
+              <div class="gap-bar bar-rehab-fade"></div>
+            </div>
+          </div>
+        </div>
+        <p class="gap-caption">↑ Illustrative pacing. Adherence tends to drop at the same point pain eases (~week 4) — but healing isn't complete until ~week 10. RehabPath operates in that gap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="section-inner">
+    <span class="section-label">The problem</span>
+    <div class="orange-rule"></div>
+    <h2>The behaviour gap is costing patients their recovery</h2>
+    <p class="section-sub">Research consistently shows that patients don't fail rehab because they don't understand it. They fail because motivation collapses the moment pain subsides — long before the body is actually healed.</p>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num">47%</div>
+        <div class="stat-label">of patients show rapid adherence decline once pain reduces — dropping from 7.7 to 4.2 out of 10 by week 22, well before structural recovery is complete</div>
+        <div class="stat-source">Dobson et al. (2018), adherence trajectory analysis · Clinical Rheumatology</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">92%</div>
+        <div class="stat-label">of patients begin with moderate-to-high adherence — the problem isn't starting, it's sustaining motivation past the point where pain reduces but recovery isn't complete</div>
+        <div class="stat-source">Dobson et al. (2018), adherence trajectory analysis · Clinical Rheumatology</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">66 days</div>
+        <div class="stat-label">average time for a new behaviour to become automatic — most rehab programmes end before this threshold, leaving patients without an established exercise habit</div>
+        <div class="stat-source">Lally et al. (2010), habit formation study · European Journal of Social Psychology</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <span class="section-label">How it works</span>
+    <div class="orange-rule"></div>
+    <h2>Behaviour change, not just reminders</h2>
+    <p class="section-sub">RehabPath combines a patient-facing app with a behavioural messaging engine that adapts to each person — surfacing the right motivation at the right moment across their entire recovery arc.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">🏥</div>
+        <h3>Physio initiates onboarding</h3>
+        <p>When a claim is lodged, the physio sends a secure invite link. The patient completes a short onboarding profile — building their behavioural baseline from day one.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🧠</div>
+        <h3>The engine adapts to the patient</h3>
+        <p>RehabPath's behavioural engine tracks response signals across daily check-ins, adapting its messaging strategy to each patient's self-efficacy, pain stage, and dropout risk.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">📊</div>
+        <h3>Physios see what's happening</h3>
+        <p>The physio dashboard surfaces adherence patterns and behavioural signals between appointments — making the clinical relationship continuous, not appointment-dependent.</p>
+      </div>
+    </div>
+    <div class="now-note">
+      <span class="now-label">Where this stands right now</span>
+      <p>This is the model RehabPath is built toward. <strong>The current pilot works differently:</strong> we're recruiting a small number of patients directly, without a physio referral in the loop, to generate real adherence data first. That data is what makes the physio-led model above worth building next. If you're a physio and want to see the results as they come in, <a href="#contact" style="color:var(--orange);">get in touch</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT CAROUSEL -->
+<section class="carousel-section" id="product">
+  <div class="section-inner" style="text-align:center;">
+    <span class="section-label">Inside the product</span>
+    <div class="orange-rule" style="margin: 0 auto 1.5rem;"></div>
+    <h2 style="max-width: 700px; margin-left:auto; margin-right:auto;">What patients and physios actually see</h2>
+    <div class="carousel-note">
+      <strong>Prototype</strong> — design concept screens used for patient and physio testing, not yet a live deployed app.
+    </div>
+    <div class="carousel">
+      <button class="carousel-arrow prev" onclick="rpCarousel(-1)" aria-label="Previous screen">‹</button>
+      <button class="carousel-arrow next" onclick="rpCarousel(1)" aria-label="Next screen">›</button>
+      <div class="carousel-frame">
+        <div class="carousel-slides">
+          <div class="carousel-slide active" data-slide="0">
+            <img src="/screenshot-patient-app.png" alt="Patient app showing today's exercise programme and recovery network">
+          </div>
+          <div class="carousel-slide" data-slide="1">
+            <img src="/screenshot-physio-dashboard.png" alt="Physio dashboard showing patient adherence overview">
+          </div>
+          <div class="carousel-slide" data-slide="2">
+            <img src="/screenshot-onboarding.png" alt="Onboarding goal selection — what does full recovery mean to you?">
+          </div>
+        </div>
+        <div class="carousel-caption">
+          <div data-caption="0">
+            <h4>Today's programme &amp; recovery network</h4>
+            <p>Patients see their exercises for the day — with completion tracking — alongside full control over who in their care team sees their progress.</p>
+          </div>
+          <div data-caption="1" style="display:none;">
+            <h4>Physio dashboard</h4>
+            <p>A simple, real-time view of how every patient is tracking between appointments — adherence trends and early dropout-risk flags, without extra clinical work.</p>
+          </div>
+          <div data-caption="2" style="display:none;">
+            <h4>Goal personalisation from day one</h4>
+            <p>The first question isn't a form — it's a future. Patients define what full recovery means to them, which anchors every message that follows.</p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-dots">
+        <button class="carousel-dot active" onclick="rpCarouselGo(0)" aria-label="Show screen 1"></button>
+        <button class="carousel-dot" onclick="rpCarouselGo(1)" aria-label="Show screen 2"></button>
+        <button class="carousel-dot" onclick="rpCarouselGo(2)" aria-label="Show screen 3"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<section class="audience" id="for-who">
+  <div class="section-inner">
+    <span class="section-label">Who it's for</span>
+    <div class="orange-rule"></div>
+    <h2>Physio-first by design. Built on patient-generated evidence.</h2>
+    <p class="section-sub">RehabPath sits at the intersection of two urgent needs — clinicians who want their patients to actually recover, and a funding system under pressure to reduce claims costs. The long-term product is built for physios; the evidence to support that conversation is being built with patients first.</p>
+    <div class="audience-grid">
+      <div class="audience-card">
+        <span class="tag">Physiotherapists</span>
+        <h3>Your patients keep doing the work. Between appointments.</h3>
+        <p>RehabPath extends your clinical impact beyond the clinic door — giving you visibility into patient behaviour and giving patients the nudge they need when you're not there.</p>
+        <ul class="benefit-list">
+          <li>Adherence data between appointments</li>
+          <li>Early dropout risk signals</li>
+          <li>Low-friction patient onboarding</li>
+          <li>Complements your programme — doesn't replace it</li>
+        </ul>
+        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.65; margin-top:1rem;">We're currently building the evidence base with a direct patient pilot, ahead of asking for practice referrals — happy to share results as they come in.</p>
+        <div class="scorecard-nudge">
+          <span class="nudge-label">Free tool for your practice</span>
+          <p>The Practice Adherence Scorecard takes 5 minutes and gives you a structured picture of where your adherence gaps are — and what they're costing you.</p>
+          <a href="/scorecard">Take the Adherence Scorecard →</a>
+        </div>
+      </div>
+      <div class="audience-card">
+        <span class="tag">ACC &amp; Funders</span>
+        <h3>Better outcomes. Fewer sessions. Lower long-term cost.</h3>
+        <p>Improved adherence means patients recover more completely, return to independence faster, and are less likely to re-present. RehabPath directly addresses the self-management and digital tool recommendations from the 2025 Sapere market review.</p>
+        <ul class="benefit-list">
+          <li>Reduces avoidable follow-up sessions</li>
+          <li>Supports the ACC active recovery mandate</li>
+          <li>Scalable per-claim model aligned with existing funding structures</li>
+          <li>Evidence-based behavioural methodology</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THINKING -->
+<section class="thinking" id="thinking">
+  <div class="section-inner">
+    <span class="section-label">Perspectives</span>
+    <div class="orange-rule"></div>
+    <h2>The ideas behind the platform</h2>
+    <p class="section-sub">Long-form pieces on rehabilitation adherence, behaviour change, and what the research says about why patients stop — and how to change that.</p>
+    <div class="articles-grid">
+      <a href="/thinking/acc-turnaround-plan-2026.html" class="article-card">
+        <span class="article-tag">ACC &amp; funding</span>
+        <h3>ACC's 2026/27 Turnaround Plan</h3>
+        <p>What ACC's own numbers tell MSK providers — and why "identify at-risk clients earlier" is the line worth sitting with.</p>
+        <span class="article-read-more">Read →</span>
+      </a>
+      <a href="/thinking/the-behaviour-gap.html" class="article-card">
+        <span class="article-tag">Behaviour change</span>
+        <h3>The Behaviour Gap</h3>
+        <p>Why rehabilitation fails after the pain goes away — and what we're getting wrong about patient adherence.</p>
+        <span class="article-read-more">Read →</span>
+      </a>
+      <a href="/thinking/why-your-patient-stopped.html" class="article-card">
+        <span class="article-tag">Clinical insight</span>
+        <h3>Why Your Patient Stopped</h3>
+        <p>The structural reasons patients disengage from home exercise programmes — and why it's not about motivation.</p>
+        <span class="article-read-more">Read →</span>
+      </a>
+      <a href="/thinking/acc-data-transparency.html" class="article-card">
+        <span class="article-tag">ACC &amp; funding</span>
+        <h3>ACC Data &amp; Transparency</h3>
+        <p>What ACC's published data tells us about physiotherapy claim patterns — and the opportunity it reveals.</p>
+        <span class="article-read-more">Read →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="section-inner">
+    <div class="about-inner">
+      <div class="about-left">
+        <div class="avatar-ring">CR</div>
+        <div class="about-name">Chris Revans</div>
+        <div class="about-title">Founder, RehabPath<br>Product Manager · East Auckland, NZ</div>
+        <ul class="about-creds">
+          <li>B.A. (Hons) Sports Studies — West Sussex Institute of Higher Education</li>
+          <li>Professional Scrum Product Owner (PSPO I)</li>
+          <li>7+ years building digital products across telco, logistics and commerce</li>
+          <li>Interests: exercise adherence, behaviour change, windsurfing, football</li>
+        </ul>
+      </div>
+      <div class="about-right">
+        <span class="section-label">Why I built this</span>
+        <div class="orange-rule"></div>
+        <div class="story-block">
+          <p>I studied sports science, spent years playing football and windsurfing, and thought I understood my body well enough to manage an injury. I was wrong.</p>
+          <p>In April 2025 I was invited to a friend's football training session. <strong>Within ten minutes I'd re-aggravated an old knee injury.</strong> I started ACC-funded physio treatment. I did the exercises when I was in pain. When the pain eased, I stopped — the way most people do, because the signal that tells you something is wrong had gone quiet.</p>
+          <p>In June 2025, while still under ACC-funded physio treatment, I played football with my son. <strong>I ruptured my ACL and required surgery.</strong></p>
+          <p>I wasn't ignorant about rehab. I had the exercises. I had a physio. What I didn't have was anything to bridge the gap between appointments — no accountability, no context for why I still needed to do the work when I felt fine, and nothing to catch me when my motivation dropped at exactly the wrong moment.</p>
+          <p>That's what RehabPath is. Not an app trying to sell you something. A system designed to do the one thing that wasn't there when I needed it.</p>
+        </div>
+        <div class="injury-timeline">
+          <div class="timeline-event">
+            <div class="tl-dot muted"></div>
+            <div class="tl-content">
+              <div class="tl-date muted">Old history</div>
+              <div class="tl-text">Pre-existing knee injury — managed, but not fully resolved</div>
+            </div>
+          </div>
+          <div class="timeline-event">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-date">April 2025</div>
+              <div class="tl-text"><strong>Re-aggravated knee injury</strong> at a friend's football training session. Started ACC-funded physio treatment.</div>
+            </div>
+          </div>
+          <div class="timeline-event">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-date">June 2025</div>
+              <div class="tl-text"><strong>ACL rupture — surgery required.</strong> Still under ACC physio at the time. Pain had eased. Programme had drifted. Classic dropout window.</div>
+            </div>
+          </div>
+          <div class="timeline-event">
+            <div class="tl-dot"></div>
+            <div class="tl-content">
+              <div class="tl-date">2026</div>
+              <div class="tl-text">Building RehabPath — starting with a small proof-of-concept cohort in New Zealand.</div>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.75;">I'm a product manager by profession, not a clinician. RehabPath is grounded in peer-reviewed research on motivational strategies in rehabilitation — and tested with real people, in real recovery, from the start.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom: 3rem;">
+      <span class="section-label">Get in touch</span>
+      <div class="orange-rule" style="margin: 0 auto 1.5rem;"></div>
+      <h2>Want to help? Here's exactly what's involved.</h2>
+      <p class="section-sub" style="margin: 0 auto 1.5rem;">If you're a patient: one WhatsApp message a day for 14 days, a quick emoji check-in, and a short feedback conversation at the end. That's it. Nothing to buy, no follow-up pitch, no catch.<br><br>If you're a physio, or work at ACC or PNZ — I'd genuinely welcome a conversation about whether this is useful.</p>
+    </div>
+    <div class="form-wrap">
+      <div id="form-area">
+        <div class="form-group">
+          <label>Your name</label>
+          <input type="text" id="fname" placeholder="Jane Smith">
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" id="femail" placeholder="jane@example.com">
+        </div>
+        <div class="form-group">
+          <label>I am a...</label>
+          <select id="frole">
+            <option value="">Select your role</option>
+            <option>I'm a rehab patient — I want to take part</option>
+            <option>Physiotherapist</option>
+            <option>ACC staff member</option>
+            <option>Physiotherapy New Zealand</option>
+            <option>Investor / advisor</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message (optional)</label>
+          <textarea id="fmsg" placeholder="What brought you here, or what would you like to know?"></textarea>
+        </div>
+        <button class="btn btn-lg form-submit" onclick="handleSubmit()">Send message →</button>
+        <div class="feedback-note">
+          <strong>If you're taking part as a patient:</strong> at the end of the 14 days I'll ask you for a short conversation about what worked, what didn't, and whether you felt it made a difference. That feedback is the whole point — it shapes what gets built next.
+        </div>
+      </div>
+      <div class="success-msg" id="success-msg">
+        Thanks — we'll be in touch shortly.<br>
+        <span style="font-size:0.9rem; font-family: 'DM Sans', sans-serif; color: var(--text-muted); font-weight:300;">Every step forward counts.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVIDENCE BASE -->
+<section style="padding: 3rem; border-top: 1px solid rgba(255,255,255,0.05);">
+  <div class="section-inner">
+    <div style="max-width: 780px; margin: 0 auto; display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap;">
+      <div style="flex-shrink:0;">
+        <div style="width: 32px; height: 2px; background: var(--orange); margin-bottom: 0.6rem;"></div>
+        <span style="font-size:0.75rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:var(--orange);">Evidence base</span>
+      </div>
+      <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.8; flex:1; min-width:260px;">
+        RehabPath's behavioural methodology is grounded in Bandura's self-efficacy model (1997) and informed by peer-reviewed research including Fernandes et al. (2023), <em>Health Professionals' Motivational Strategies to Enhance Adherence in the Rehabilitation of People with Lower Limb Fractures</em>, Int. J. Environ. Res. Public Health; Dobson et al. (2018), <em>Exercise adherence in clinical populations</em>, Clinical Rheumatology; and Lally et al. (2010), <em>How are habits formed</em>, European Journal of Social Psychology. Market context draws on the Sapere <em>Physiotherapy Services Market Review</em>, independently commissioned by ACC and Physiotherapy New Zealand, December 2025. All figures above represent published research estimates, not RehabPath outcome data.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><img src="/rehabpath_logo_transparent.png" alt="RehabPath"></div>
+  <p>Early stage · New Zealand · Built to close the behaviour gap</p>
+  <p style="font-size:0.75rem;">© 2026 RehabPath Ltd</p>
+</footer>
+
+<script>
+  (function prefillFromQuiz() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('ref') !== 'quiz') return;
+    const profileNames = {
+      driven: 'The Driven but Derailed',
+      achiever: 'The Ready Achiever',
+      explorer: 'The Cautious Explorer',
+      mover: 'The Passive Mover'
+    };
+    const profile = profileNames[params.get('profile')] || '';
+    const roleEl = document.getElementById('frole');
+    const msgEl = document.getElementById('fmsg');
+    if (roleEl) roleEl.value = "I'm a rehab patient — I want to take part";
+    if (msgEl) {
+      msgEl.value = profile
+        ? `Just completed the adherence assessment — my profile: ${profile}. Keen to hear more about the pilot.`
+        : `Just completed the adherence assessment. Keen to hear more about the pilot.`;
+    }
+  })();
+
+  async function handleSubmit() {
+    const name  = document.getElementById('fname').value.trim();
+    const email = document.getElementById('femail').value.trim();
+    const role  = document.getElementById('frole').value;
+    const msg   = document.getElementById('fmsg').value.trim();
+    if (!name || !email || !role) {
+      alert('Please fill in your name, email, and role.');
+      return;
+    }
+    const btn = document.querySelector('.form-submit');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    try {
+      const res = await fetch('https://formspree.io/f/mbdqkayb', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name, email, role, message: msg || '(no message)' })
+      });
+      if (res.ok) {
+        document.getElementById('form-area').style.display = 'none';
+        document.getElementById('success-msg').style.display = 'block';
+      } else {
+        alert('Something went wrong. Please email chris@rehabpath.co.nz directly.');
+        btn.textContent = 'Send message →';
+        btn.disabled = false;
+      }
+    } catch(e) {
+      alert('Something went wrong. Please email chris@rehabpath.co.nz directly.');
+      btn.textContent = 'Send message →';
+      btn.disabled = false;
+    }
+  }
+
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.borderBottomColor = window.scrollY > 50
+      ? 'rgba(245,166,35,0.2)'
+      : 'rgba(245,166,35,0.1)';
+  });
+
+  // ── PRODUCT CAROUSEL ──
+  let rpSlide = 0;
+  const rpTotal = 3;
+  let rpTimer = null;
+
+  function rpCarouselRender() {
+    document.querySelectorAll('.carousel-slide').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.slide) === rpSlide);
+    });
+    document.querySelectorAll('[data-caption]').forEach(el => {
+      el.style.display = Number(el.dataset.caption) === rpSlide ? 'block' : 'none';
+    });
+    document.querySelectorAll('.carousel-dot').forEach((el, i) => {
+      el.classList.toggle('active', i === rpSlide);
+    });
+  }
+
+  function rpCarousel(dir) {
+    rpSlide = (rpSlide + dir + rpTotal) % rpTotal;
+    rpCarouselRender();
+    rpCarouselResetTimer();
+  }
+
+  function rpCarouselGo(i) {
+    rpSlide = i;
+    rpCarouselRender();
+    rpCarouselResetTimer();
+  }
+
+  function rpCarouselResetTimer() {
+    clearInterval(rpTimer);
+    rpTimer = setInterval(() => { rpCarousel(1); }, 8000);
+  }
+  rpCarouselResetTimer();
+
+</script>
+
+</body>
+</html>
