@@ -1,0 +1,4 @@
+# The marketing site is static HTML at the repo root. Keep app source and tooling off the CDN.
+ios/
+.claude/
+.github/

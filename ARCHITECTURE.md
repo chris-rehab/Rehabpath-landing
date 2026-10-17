@@ -56,7 +56,13 @@ There is no database connection, no authentication, and no patient health data c
     ├── the-behaviour-gap.html
     ├── why-your-patient-stopped.html
     └── acc-data-transparency.html
+
+ios/                              ← Native iOS prototype (SwiftUI). Not deployed by Vercel.
+.claude/                          ← Claude Code agents and skills for the iOS prototype
+.github/workflows/ios.yml         ← iOS CI (compliance gate, tests)
 ```
+
+`.vercelignore` keeps `ios/`, `.claude/` and `.github/` off the CDN. The iOS prototype is on-device only and holds no backend credentials. Its rules live in `ios/CLAUDE.md` and `ios/docs/`. Once it syncs patient data to a server, that work belongs with the app repo and its security framework (see §9).
 
 ### Internal linking
 
