@@ -70,6 +70,7 @@ jobs:
             -scheme RehabPath \
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -skip-testing:RehabPathUITests/ScreenshotTests \
+            -retry-tests-on-failure -test-iterations 3 \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO
 

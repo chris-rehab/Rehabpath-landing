@@ -53,3 +53,12 @@ Cloud sessions here have no Swift toolchain or Xcode. Push to the branch and rea
 The `/ios-pipeline` skill runs the agents in `.claude/agents/`:
 
 `ios-builder` → `ios-test-engineer` → (`ux-design-reviewer` ∥ `data-governance-officer` ∥ `apple-review-auditor`) → fix loop → report
+
+## Known flakiness: Apple's accessibility audit
+
+`performAccessibilityAudit` is not fully deterministic on the iOS 26 simulator. Run 14 failed two
+contrast findings (about 9:1 text) on the Privacy tab with code identical to runs 12 and 13, which
+passed. CI therefore retries failing UI tests up to 3 times (`-retry-tests-on-failure
+-test-iterations 3`): a real defect fails every attempt, a measurement glitch passes on retry.
+If an audit finding reproduces on all three attempts, treat it as real. Never skip or weaken the
+audit to get green; see the cross-pass contrast rule in `RehabPathUITests.swift`.
