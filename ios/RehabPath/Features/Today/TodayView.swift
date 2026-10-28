@@ -22,19 +22,29 @@ struct TodayView: View {
         }
     }
 
+    private var progressLabel: some View {
+        Text("\(model.completedTodayCount) of \(model.exercises.count) done")
+            .font(.subheadline)
+            .foregroundStyle(Color.mutedText)
+            .accessibilityIdentifier("today.progress")
+    }
+
     private var greeting: String {
         "Kia ora, \(model.data.profile?.preferredName ?? "there")"
     }
 
     private var programmeCard: some View {
         Card {
-            HStack(alignment: .firstTextBaseline) {
-                Text("Today's programme").font(.title3.weight(.semibold))
-                Spacer()
-                Text("\(model.completedTodayCount) of \(model.exercises.count) done")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.mutedText)
-                    .accessibilityIdentifier("today.progress")
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Today's programme").font(.title3.weight(.semibold))
+                    Spacer()
+                    progressLabel
+                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Today's programme").font(.title3.weight(.semibold))
+                    progressLabel
+                }
             }
             ProgressView(value: Double(model.completedTodayCount), total: Double(max(model.exercises.count, 1)))
                 .accessibilityHidden(true)
@@ -89,13 +99,17 @@ private struct NudgeCard: View {
 }
 
 private struct ExerciseRow: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let exercise: Exercise
     let isDone: Bool
     let toggle: () -> Void
 
+    /// At accessibility text sizes the sets and reps drop under the name instead of squeezing it.
+    private var stacked: Bool { typeSize.isAccessibilitySize }
+
     var body: some View {
         Button(action: toggle) {
-            HStack(spacing: 12) {
+            HStack(alignment: stacked ? .top : .center, spacing: 12) {
                 Image(systemName: isDone ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
                     .foregroundStyle(isDone ? Color.accentColor : Color.mutedText)
@@ -106,11 +120,14 @@ private struct ExerciseRow: View {
                     Text(exercise.focus)
                         .font(.footnote)
                         .foregroundStyle(Color.mutedText)
+                    if stacked {
+                        prescription
+                    }
                 }
-                Spacer(minLength: 8)
-                Text(exercise.prescription)
-                    .font(.subheadline.monospacedDigit())
-                    .foregroundStyle(Color.mutedText)
+                if !stacked {
+                    Spacer(minLength: 8)
+                    prescription
+                }
             }
             .frame(minHeight: 44)
             .contentShape(Rectangle())
@@ -122,6 +139,12 @@ private struct ExerciseRow: View {
         .accessibilityHint(isDone ? "Double-tap to mark as not done" : "Double-tap to mark as done")
         .accessibilityAddTraits(.isButton)
         .accessibilityIdentifier("exercise.\(exercise.id)")
+    }
+
+    private var prescription: some View {
+        Text(exercise.prescription)
+            .font(.subheadline.monospacedDigit())
+            .foregroundStyle(Color.mutedText)
     }
 }
 

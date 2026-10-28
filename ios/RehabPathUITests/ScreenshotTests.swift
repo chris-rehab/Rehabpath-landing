@@ -8,6 +8,7 @@ final class ScreenshotTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = true
+        XCUIDevice.shared.appearance = .light
     }
 
     func testOnboarding() {
@@ -38,7 +39,10 @@ final class ScreenshotTests: XCTestCase {
     }
 
     func testMainScreensDark() {
-        captureMainScreens(set: "dark", extraArguments: ["-AppleInterfaceStyle", "Dark"])
+        // A launch argument does not switch iOS appearance (-AppleInterfaceStyle is macOS only).
+        XCUIDevice.shared.appearance = .dark
+        defer { XCUIDevice.shared.appearance = .light }
+        captureMainScreens(set: "dark")
     }
 
     func testMainScreensLargeText() {

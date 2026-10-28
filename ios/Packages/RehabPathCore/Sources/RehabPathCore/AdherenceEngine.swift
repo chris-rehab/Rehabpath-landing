@@ -120,7 +120,7 @@ public struct AdherenceEngine: Sendable {
 
     public func nudge(for data: AppData, asOf now: Date) -> Nudge {
         let summary = self.summary(for: data, asOf: now)
-        let goal = data.profile?.recoveryGoal ?? "your goal"
+        let goal = Self.midSentence(data.profile?.recoveryGoal ?? "your goal")
 
         if let pain = summary.latestPain, pain >= PainScale.contactPhysioThreshold {
             return Nudge(
@@ -166,6 +166,14 @@ public struct AdherenceEngine: Sendable {
     }
 
     // MARK: - Rules
+
+    /// The patient's goal as it reads inside a sentence: "Walking the dog" becomes "walking the
+    /// dog", while an acronym such as "ACL rehab" keeps its capitals.
+    static func midSentence(_ goal: String) -> String {
+        guard let first = goal.first, first.isUppercase else { return goal }
+        if let second = goal.dropFirst().first, second.isUppercase { return goal }
+        return first.lowercased() + goal.dropFirst()
+    }
 
     /// Completed days before today that fall within the programme, oldest first.
     private func pastFullDays(in data: AppData, asOf now: Date, limit: Int) -> [DayCompletion] {

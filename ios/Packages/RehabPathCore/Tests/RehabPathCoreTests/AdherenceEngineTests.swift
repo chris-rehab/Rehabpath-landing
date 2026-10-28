@@ -114,6 +114,18 @@ final class AdherenceEngineTests: XCTestCase {
         XCTAssertTrue(nudge.message.contains("surfing"))
     }
 
+    func testGoalReadsNaturallyMidSentence() {
+        XCTAssertEqual(AdherenceEngine.midSentence("Walking the dog"), "walking the dog")
+        XCTAssertEqual(AdherenceEngine.midSentence("playing netball again"), "playing netball again")
+        XCTAssertEqual(AdherenceEngine.midSentence("ACL rehab"), "ACL rehab")
+        XCTAssertEqual(AdherenceEngine.midSentence(""), "")
+
+        var data = makeData(startDaysAgo: 10)
+        data.profile?.recoveryGoal = "Walking the dog"
+        complete(&data, daysAgo: [0, 1, 2, 3, 4])
+        XCTAssertTrue(engine.nudge(for: data, asOf: now).message.contains("towards walking the dog"))
+    }
+
     func testRecentDaysAreOldestFirstAndEndToday() {
         let days = engine.recentDays(7, in: makeData(startDaysAgo: 10), asOf: now)
         XCTAssertEqual(days.count, 7)
