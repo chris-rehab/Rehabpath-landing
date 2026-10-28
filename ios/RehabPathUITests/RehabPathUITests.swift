@@ -91,51 +91,51 @@ final class MainAppUITests: XCTestCase {
         }
     }
 
-    private enum EdgeZone { case top, bottom }
+    private struct PassResult {
+        /// Static-text contrast findings from this pass, by label.
+        var flagged: [String: String] = [:]
+        /// Static-text labels fully on screen in this pass and not flagged.
+        var clean: Set<String> = []
+    }
 
     /// Audits a screen twice — at the top and scrolled to the bottom. iOS 26 softens content near
-    /// the nav and tab bars, and the audit then measures blurred pixels instead of the text. So the
-    /// top pass skips contrast findings on text in the bottom edge zone, and the bottom pass skips
-    /// those in the top edge zone; every element is checked at rest in at least one pass.
+    /// the nav and tab bars, and the audit then measures blurred pixels instead of the text. So a
+    /// contrast finding on static text is accepted only if the same text was on screen and audited
+    /// clean in the other pass; a real contrast problem is flagged in both passes and still fails,
+    /// and so does text that was never seen clean. Every other finding fails immediately.
     /// Reports every issue (not just the first) so one CI run shows the full list.
     private func audit(screen: String) throws {
         // setUp stops tests at the first failure; keep going so one run lists every audit issue.
         let stopAtFirstFailure = continueAfterFailure
         continueAfterFailure = true
         defer { continueAfterFailure = stopAtFirstFailure }
-        try runAudit(screen: "\(screen) top", skipping: .bottom)
+        let top = try runAudit(screen: "\(screen) top")
         for _ in 0..<3 { app.swipeUp() }
-        try runAudit(screen: "\(screen) bottom", skipping: .top)
+        let bottom = try runAudit(screen: "\(screen) bottom")
         for _ in 0..<3 { app.swipeDown() }
+        for (label, message) in top.flagged where !bottom.clean.contains(label) { XCTFail(message) }
+        for (label, message) in bottom.flagged where !top.clean.contains(label) { XCTFail(message) }
     }
 
-    private func runAudit(screen: String, skipping zone: EdgeZone) throws {
-        let window = app.windows.firstMatch.frame
-        let edgeBlur: CGFloat = 60
-        let skipRegion: CGRect = switch zone {
-        case .top:
-            CGRect(x: 0, y: 0, width: window.width, height: app.navigationBars.firstMatch.frame.maxY + edgeBlur)
-        case .bottom:
-            CGRect(x: 0, y: app.tabBars.firstMatch.frame.minY - edgeBlur, width: window.width,
-                   height: window.height - app.tabBars.firstMatch.frame.minY + edgeBlur)
-        }
-        let barOwnLabels = Set(
-            (app.tabBars.firstMatch.descendants(matching: .any).allElementsBoundByIndex
-                + app.navigationBars.firstMatch.descendants(matching: .any).allElementsBoundByIndex).map(\.label)
-        )
+    private func runAudit(screen: String) throws -> PassResult {
+        var result = PassResult()
         try app.performAccessibilityAudit { issue in
             let element = issue.element
-            if issue.auditType == .contrast,
-               let element,
-               element.elementType == .staticText,
-               !barOwnLabels.contains(element.label),
-               skipRegion.intersects(element.frame) {
-                return true  // in the bar-blur zone for this pass; audited at rest in the other pass
-            }
             let detail = element.map { "\($0.elementType.rawValue) \"\($0.label)\" frame=\($0.frame)" } ?? "unknown element"
-            XCTFail("[\(screen)] \(issue.compactDescription) | \(issue.detailedDescription) | \(detail)")
+            let message = "[\(screen)] \(issue.compactDescription) | \(issue.detailedDescription) | \(detail)"
+            if issue.auditType == .contrast, let element, element.elementType == .staticText, !element.label.isEmpty {
+                result.flagged[element.label] = message  // judged after both passes
+            } else {
+                XCTFail(message)
+            }
             return true
         }
+        let window = app.windows.firstMatch.frame
+        for text in app.staticTexts.allElementsBoundByIndex
+        where !text.label.isEmpty && window.contains(text.frame) && result.flagged[text.label] == nil {
+            result.clean.insert(text.label)
+        }
+        return result
     }
 
     private func scrollTo(_ element: XCUIElement) {
