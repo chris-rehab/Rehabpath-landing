@@ -141,18 +141,19 @@ jobs:
           if-no-files-found: warn
 
       # Also print compressed copies into this job's log, so they can be read where artifact
-      # downloads are not possible. Synthetic data only.
+      # downloads are not possible. Synthetic data only. Wide fold: the log reader returns at most
+      # the last 5000 lines, and narrow folding pushed the early images out of reach.
       - name: Print compressed screenshots to the log
         if: always()
         run: |
           mkdir -p small
           for f in screenshots/*.png; do
             n=$(basename "${f%.png}")
-            sips -Z 1000 -s format jpeg -s formatOptions 55 "$f" --out "small/$n.jpg" >/dev/null
+            sips -Z 900 -s format jpeg -s formatOptions 50 "$f" --out "small/$n.jpg" >/dev/null
           done
           for f in small/*.jpg; do
             echo "::SHOT-BEGIN::$(basename "$f")"
-            base64 -i "$f" | fold -w 120
+            base64 -i "$f" | fold -w 20000
             echo "::SHOT-END::$(basename "$f")"
           done
 
