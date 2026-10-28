@@ -41,10 +41,10 @@ struct JourneyView: View {
                         Label("Why keep going when it feels better?", systemImage: "lightbulb")
                             .font(.headline)
                         Text("Pain often eases weeks before your body has finished rebuilding strength. That's when most people stop — and when sticking with it matters most. New habits can take around two months to feel automatic.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.mutedText)
                         Text("Source: Lally et al. (2010), European Journal of Social Psychology.")
                             .font(.footnote)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.mutedText)
                     }
                 }
                 .padding()
@@ -66,7 +66,7 @@ private struct Stat: View {
                 .monospacedDigit()
             Text(label)
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.mutedText)
         }
         .accessibilityElement(children: .combine)
     }

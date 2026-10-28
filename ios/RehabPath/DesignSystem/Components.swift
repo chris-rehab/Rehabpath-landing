@@ -4,8 +4,11 @@ import RehabPathCore
 // Brand colours come from the asset catalog so light/dark variants meet WCAG AA contrast:
 // AccentColor  light #9A5800 (5.6:1 on white)   dark #F5A623 (8.4:1 on #1C1C1E)
 // OnAccent     light #FFFFFF                     dark #0D1117 (9.3:1 on #F5A623)
+// MutedText    light #595959 (6.4:1 on #F2F2F7)  dark #AEAEB2 (7.6:1 on #1C1C1E)
+// Use MutedText instead of `.secondary`: the system grey is only ~3.4:1 on white cards, below AA.
 extension Color {
     static let onAccent = Color("OnAccent")
+    static let mutedText = Color("MutedText")
 }
 
 /// Grouped "card" container used on Today and Progress.
@@ -54,7 +57,7 @@ struct PainScalePicker: View {
                     .font(.system(.largeTitle, design: .rounded, weight: .bold))
                     .monospacedDigit()
                 Text("/ 10 · \(Self.describe(value))")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.mutedText)
             }
             .accessibilityHidden(true)
 
@@ -73,7 +76,7 @@ struct PainScalePicker: View {
 
             Text("0 = no pain, 10 = worst imaginable")
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.mutedText)
         }
     }
 
@@ -98,6 +101,6 @@ struct PrototypeNotice: View {
             Image(systemName: "info.circle")
         }
         .font(.footnote)
-        .foregroundStyle(.secondary)
+        .foregroundStyle(Color.mutedText)
     }
 }

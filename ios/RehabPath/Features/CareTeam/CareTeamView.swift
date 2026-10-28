@@ -17,18 +17,19 @@ struct CareTeamView: View {
                                 Text(member.name)
                                 Text("\(member.role) · \(member.organisation)")
                                     .font(.footnote)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Color.mutedText)
                             }
                         }
                         .disabled(!sharingAllowed)
                         .accessibilityIdentifier("careTeam.\(member.name)")
                     }
                 } header: {
-                    Text("Who can see your progress")
+                    Text("Who can see your progress").foregroundStyle(Color.mutedText)
                 } footer: {
                     Text(sharingAllowed
                          ? "You're in control. Turn sharing on only for people who support your recovery. Prototype: nothing is sent yet — this shows how sharing will work."
                          : "Sharing is off. You can allow it in the Privacy tab.")
+                    .foregroundStyle(Color.mutedText)
                 }
             }
             .navigationTitle("Care team")

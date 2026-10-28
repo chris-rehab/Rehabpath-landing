@@ -10,11 +10,13 @@ struct PrivacyView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Your data") {
+                Section {
                     Label("Stored only on this iPhone", systemImage: "iphone")
                     Label("Encrypted while your iPhone is locked", systemImage: "lock")
                     Label("Not backed up to iCloud", systemImage: "icloud.slash")
                     Label("Nothing is sent to RehabPath in this prototype", systemImage: "network.slash")
+                } header: {
+                    Text("Your data").foregroundStyle(Color.mutedText)
                 }
 
                 Section {
@@ -25,16 +27,17 @@ struct PrivacyView: View {
                         )) {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(scope.title)
-                                Text(scope.detail).font(.footnote).foregroundStyle(.secondary)
+                                Text(scope.detail).font(.footnote).foregroundStyle(Color.mutedText)
                             }
                         }
                         .accessibilityIdentifier("privacy.\(scope.scope.rawValue)")
                     }
                 } header: {
-                    Text("Permissions")
+                    Text("Permissions").foregroundStyle(Color.mutedText)
                 } footer: {
                     if let consent = model.data.consent {
                         Text("You agreed on \(consent.grantedAt.formatted(date: .long, time: .omitted)) (version \(consent.version)).")
+                            .foregroundStyle(Color.mutedText)
                     }
                 }
 
@@ -55,15 +58,18 @@ struct PrivacyView: View {
                     }
                     .accessibilityIdentifier("privacy.delete")
                 } header: {
-                    Text("Your rights")
+                    Text("Your rights").foregroundStyle(Color.mutedText)
                 } footer: {
                     Text("Deleting removes everything from this iPhone straight away and can't be undone. Questions? Email \(AppConfig.privacyEmail).")
+                        .foregroundStyle(Color.mutedText)
                 }
 
-                Section("About") {
+                Section {
                     Link("Privacy policy", destination: AppConfig.privacyPolicyURL)
                     Link("Support", destination: AppConfig.supportURL)
                     PrototypeNotice()
+                } header: {
+                    Text("About").foregroundStyle(Color.mutedText)
                 }
             }
             .navigationTitle("Privacy")

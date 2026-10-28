@@ -66,7 +66,7 @@ final class MainAppUITests: XCTestCase {
         let delete = app.buttons["privacy.delete"]
         scrollTo(delete)
         delete.tap()
-        app.buttons["Delete everything"].tap()
+        app.buttons["Delete everything"].firstMatch.tap()
 
         XCTAssertTrue(app.textFields["onboarding.name"].waitForExistence(timeout: 3))
     }
@@ -81,13 +81,22 @@ final class MainAppUITests: XCTestCase {
     // MARK: Apple accessibility audit (Xcode 15+): contrast, Dynamic Type, hit regions, labels.
 
     func testAccessibilityAuditToday() throws {
-        try app.performAccessibilityAudit()
+        try audit(screen: "Today")
     }
 
     func testAccessibilityAuditAllTabs() throws {
         for tab in ["Progress", "Care team", "Privacy"] {
             app.tabBars.buttons[tab].tap()
-            try app.performAccessibilityAudit()
+            try audit(screen: tab)
+        }
+    }
+
+    /// Reports every issue on the screen (not just the first) so one CI run shows the full list.
+    private func audit(screen: String) throws {
+        try app.performAccessibilityAudit { issue in
+            let element = issue.element.map { "\($0.elementType) \"\($0.label)\"" } ?? "unknown element"
+            XCTFail("[\(screen)] \(issue.compactDescription): \(element)")
+            return true
         }
     }
 

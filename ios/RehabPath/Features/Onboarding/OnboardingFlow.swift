@@ -63,7 +63,7 @@ struct OnboardingFlow: View {
     private var aboutYou: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("This takes about two minutes. Your answers help RehabPath support you at the right moments.")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.mutedText)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("What should we call you?").font(.headline)
@@ -80,7 +80,7 @@ struct OnboardingFlow: View {
                     .accessibilityIdentifier("onboarding.goal")
                 Text("We'll remind you of this when motivation dips.")
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.mutedText)
             }
         }
     }
@@ -91,14 +91,14 @@ struct OnboardingFlow: View {
             PainScalePicker(value: $pain)
                 .accessibilityIdentifier("onboarding.pain")
             Text("This gives us a starting point. Pain usually eases before healing is complete — we'll help you keep going through that stage.")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.mutedText)
         }
     }
 
     private var consentStep: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("We believe you should know exactly how your information is used.")
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.mutedText)
 
             Card {
                 ConsentFact(symbol: "iphone", title: "What we store",
@@ -120,7 +120,7 @@ struct OnboardingFlow: View {
                     Toggle(isOn: binding(for: scope.scope)) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(scope.title)
-                            Text(scope.detail).font(.footnote).foregroundStyle(.secondary)
+                            Text(scope.detail).font(.footnote).foregroundStyle(Color.mutedText)
                         }
                     }
                     .accessibilityIdentifier("consent.\(scope.scope.rawValue)")
@@ -198,7 +198,7 @@ private struct ConsentFact: View {
         Label {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.subheadline.weight(.semibold))
-                Text(detail).font(.subheadline).foregroundStyle(.secondary)
+                Text(detail).font(.subheadline).foregroundStyle(Color.mutedText)
             }
         } icon: {
             Image(systemName: symbol).foregroundStyle(Color.accentColor)

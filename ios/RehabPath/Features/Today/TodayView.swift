@@ -33,7 +33,7 @@ struct TodayView: View {
                 Spacer()
                 Text("\(model.completedTodayCount) of \(model.exercises.count) done")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.mutedText)
                     .accessibilityIdentifier("today.progress")
             }
             ProgressView(value: Double(model.completedTodayCount), total: Double(max(model.exercises.count, 1)))
@@ -59,7 +59,7 @@ private struct NudgeCard: View {
             Label {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(nudge.title).font(.headline)
-                    Text(nudge.message).foregroundStyle(.secondary)
+                    Text(nudge.message).foregroundStyle(Color.mutedText)
                 }
             } icon: {
                 Image(systemName: symbol).foregroundStyle(Color.accentColor)
@@ -98,19 +98,19 @@ private struct ExerciseRow: View {
             HStack(spacing: 12) {
                 Image(systemName: isDone ? "checkmark.circle.fill" : "circle")
                     .font(.title2)
-                    .foregroundStyle(isDone ? Color.accentColor : Color.secondary)
+                    .foregroundStyle(isDone ? Color.accentColor : Color.mutedText)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(exercise.name)
                         .font(.body.weight(.medium))
-                        .foregroundStyle(isDone ? .secondary : .primary)
+                        .foregroundStyle(isDone ? Color.mutedText : Color.primary)
                     Text(exercise.focus)
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.mutedText)
                 }
                 Spacer(minLength: 8)
                 Text(exercise.prescription)
                     .font(.subheadline.monospacedDigit())
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.mutedText)
             }
             .frame(minHeight: 44)
             .contentShape(Rectangle())
@@ -141,7 +141,7 @@ private struct PainCheckInCard: View {
             if let saved = model.today?.painScore {
                 Label("Saved: \(saved) out of 10", systemImage: "checkmark")
                     .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.mutedText)
             }
         }
         .onAppear {
