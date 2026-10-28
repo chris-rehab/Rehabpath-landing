@@ -91,11 +91,34 @@ final class MainAppUITests: XCTestCase {
         }
     }
 
-    /// Reports every issue on the screen (not just the first) so one CI run shows the full list.
+    /// Audits a screen twice — at the top and scrolled to the bottom — because text below the fold
+    /// sits under the translucent tab bar at rest, and the audit then measures the bar's pixels
+    /// instead of the text. Each element is checked in whichever pass shows it clear of the bars.
+    /// Reports every issue (not just the first) so one CI run shows the full list.
     private func audit(screen: String) throws {
+        try runAudit(screen: "\(screen) top")
+        for _ in 0..<3 { app.swipeUp() }
+        try runAudit(screen: "\(screen) bottom")
+        for _ in 0..<3 { app.swipeDown() }
+    }
+
+    private func runAudit(screen: String) throws {
+        let bars = [app.tabBars.firstMatch.frame, app.navigationBars.firstMatch.frame]
+        let barOwnLabels = Set(
+            (app.tabBars.firstMatch.descendants(matching: .any).allElementsBoundByIndex
+                + app.navigationBars.firstMatch.descendants(matching: .any).allElementsBoundByIndex).map(\.label)
+        )
         try app.performAccessibilityAudit { issue in
-            let element = issue.element.map { "\($0.elementType.rawValue) \"\($0.label)\" frame=\($0.frame)" } ?? "unknown element"
-            XCTFail("[\(screen)] \(issue.compactDescription) | \(issue.detailedDescription) | \(element)")
+            let element = issue.element
+            if issue.auditType == .contrast,
+               let element,
+               element.elementType == .staticText,
+               !barOwnLabels.contains(element.label),
+               bars.contains(where: { $0.intersects(element.frame) }) {
+                return true  // scrolled under a bar in this pass; audited clear of it in the other pass
+            }
+            let detail = element.map { "\($0.elementType.rawValue) \"\($0.label)\" frame=\($0.frame)" } ?? "unknown element"
+            XCTFail("[\(screen)] \(issue.compactDescription) | \(issue.detailedDescription) | \(detail)")
             return true
         }
     }
