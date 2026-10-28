@@ -96,6 +96,10 @@ final class MainAppUITests: XCTestCase {
     /// instead of the text. Each element is checked in whichever pass shows it clear of the bars.
     /// Reports every issue (not just the first) so one CI run shows the full list.
     private func audit(screen: String) throws {
+        // setUp stops tests at the first failure; keep going so one run lists every audit issue.
+        let stopAtFirstFailure = continueAfterFailure
+        continueAfterFailure = true
+        defer { continueAfterFailure = stopAtFirstFailure }
         try runAudit(screen: "\(screen) top")
         for _ in 0..<3 { app.swipeUp() }
         try runAudit(screen: "\(screen) bottom")
