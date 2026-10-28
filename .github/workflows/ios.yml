@@ -120,7 +120,7 @@ jobs:
             --wifiBars 3 --cellularMode active --cellularBars 4
 
       # Every screen in light, dark and large-text, from synthetic sample data only.
-      - name: Capture screenshots
+      - name: Capture screenshots (light, large text, onboarding)
         env:
           TEST_RUNNER_SCREENSHOT_DIR: ${{ github.workspace }}/screenshots
         run: |
@@ -131,7 +131,24 @@ jobs:
             -scheme RehabPath \
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -only-testing:RehabPathUITests/ScreenshotTests \
+            -skip-testing:RehabPathUITests/ScreenshotTests/testMainScreensDark \
             -resultBundlePath Screenshots.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Capture screenshots (dark mode)
+        env:
+          TEST_RUNNER_SCREENSHOT_DIR: ${{ github.workspace }}/screenshots
+        run: |
+          xcrun simctl ui "${{ steps.sim.outputs.udid }}" appearance dark
+          sleep 5
+          cd ios
+          set -o pipefail
+          xcodebuild test \
+            -project RehabPath.xcodeproj \
+            -scheme RehabPath \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -only-testing:RehabPathUITests/ScreenshotTests/testMainScreensDark \
+            -resultBundlePath ScreenshotsDark.xcresult \
             CODE_SIGNING_ALLOWED=NO
 
       - uses: actions/upload-artifact@v4

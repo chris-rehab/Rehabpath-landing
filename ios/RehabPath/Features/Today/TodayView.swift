@@ -3,6 +3,7 @@ import RehabPathCore
 
 struct TodayView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         NavigationStack {
@@ -22,6 +23,24 @@ struct TodayView: View {
         }
     }
 
+    /// Side by side normally; stacked at accessibility text sizes. (ViewThatFits drew Dynamic Type
+    /// and clipping findings from Apple's audit; the environment check does not.)
+    @ViewBuilder
+    private var programmeHeader: some View {
+        if typeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Today's programme").font(.title3.weight(.semibold))
+                progressLabel
+            }
+        } else {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Today's programme").font(.title3.weight(.semibold))
+                Spacer()
+                progressLabel
+            }
+        }
+    }
+
     private var progressLabel: some View {
         Text("\(model.completedTodayCount) of \(model.exercises.count) done")
             .font(.subheadline)
@@ -35,17 +54,7 @@ struct TodayView: View {
 
     private var programmeCard: some View {
         Card {
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .firstTextBaseline) {
-                    Text("Today's programme").font(.title3.weight(.semibold))
-                    Spacer()
-                    progressLabel
-                }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Today's programme").font(.title3.weight(.semibold))
-                    progressLabel
-                }
-            }
+            programmeHeader
             ProgressView(value: Double(model.completedTodayCount), total: Double(max(model.exercises.count, 1)))
                 .accessibilityHidden(true)
 

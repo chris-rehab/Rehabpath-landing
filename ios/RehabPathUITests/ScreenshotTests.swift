@@ -8,7 +8,6 @@ final class ScreenshotTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = true
-        XCUIDevice.shared.appearance = .light
     }
 
     func testOnboarding() {
@@ -38,10 +37,10 @@ final class ScreenshotTests: XCTestCase {
         captureMainScreens(set: "light")
     }
 
+    /// The simulator itself must be in dark mode: CI runs this test on its own after
+    /// `xcrun simctl ui <device> appearance dark`. Neither a launch argument nor
+    /// XCUIDevice.appearance switched it on the iOS 26 simulator.
     func testMainScreensDark() {
-        // A launch argument does not switch iOS appearance (-AppleInterfaceStyle is macOS only).
-        XCUIDevice.shared.appearance = .dark
-        defer { XCUIDevice.shared.appearance = .light }
         captureMainScreens(set: "dark")
     }
 
