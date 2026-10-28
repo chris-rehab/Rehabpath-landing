@@ -94,8 +94,8 @@ final class MainAppUITests: XCTestCase {
     /// Reports every issue on the screen (not just the first) so one CI run shows the full list.
     private func audit(screen: String) throws {
         try app.performAccessibilityAudit { issue in
-            let element = issue.element.map { "\($0.elementType) \"\($0.label)\"" } ?? "unknown element"
-            XCTFail("[\(screen)] \(issue.compactDescription): \(element)")
+            let element = issue.element.map { "\($0.elementType.rawValue) \"\($0.label)\" frame=\($0.frame)" } ?? "unknown element"
+            XCTFail("[\(screen)] \(issue.compactDescription) | \(issue.detailedDescription) | \(element)")
             return true
         }
     }

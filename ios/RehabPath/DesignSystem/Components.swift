@@ -4,7 +4,7 @@ import RehabPathCore
 // Brand colours come from the asset catalog so light/dark variants meet WCAG AA contrast:
 // AccentColor  light #9A5800 (5.6:1 on white)   dark #F5A623 (8.4:1 on #1C1C1E)
 // OnAccent     light #FFFFFF                     dark #0D1117 (9.3:1 on #F5A623)
-// MutedText    light #595959 (6.4:1 on #F2F2F7)  dark #AEAEB2 (7.6:1 on #1C1C1E)
+// MutedText    light #48484A (8.2:1 on #F2F2F7)  dark #C7C7CC (10.1:1 on #1C1C1E)
 // Use MutedText instead of `.secondary`: the system grey is only ~3.4:1 on white cards, below AA.
 extension Color {
     static let onAccent = Color("OnAccent")
