@@ -6,9 +6,11 @@ import RehabPathCore
 // OnAccent     light #FFFFFF                     dark #0D1117 (9.3:1 on #F5A623)
 // MutedText    light #48484A (8.2:1 on #F2F2F7)  dark #C7C7CC (10.1:1 on #1C1C1E)
 // Use MutedText instead of `.secondary`: the system grey is only ~3.4:1 on white cards, below AA.
+// DestructiveText light #B3261E (5.9:1 on #F2F2F7)  dark #FF8A80 (7.5:1 on #1C1C1E); system red is 3.5:1.
 extension Color {
     static let onAccent = Color("OnAccent")
     static let mutedText = Color("MutedText")
+    static let destructiveText = Color("DestructiveText")
 }
 
 /// Grouped "card" container used on Today and Progress.

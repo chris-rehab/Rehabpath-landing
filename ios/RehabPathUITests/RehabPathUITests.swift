@@ -91,23 +91,34 @@ final class MainAppUITests: XCTestCase {
         }
     }
 
-    /// Audits a screen twice — at the top and scrolled to the bottom — because text below the fold
-    /// sits under the translucent tab bar at rest, and the audit then measures the bar's pixels
-    /// instead of the text. Each element is checked in whichever pass shows it clear of the bars.
+    private enum EdgeZone { case top, bottom }
+
+    /// Audits a screen twice — at the top and scrolled to the bottom. iOS 26 softens content near
+    /// the nav and tab bars, and the audit then measures blurred pixels instead of the text. So the
+    /// top pass skips contrast findings on text in the bottom edge zone, and the bottom pass skips
+    /// those in the top edge zone; every element is checked at rest in at least one pass.
     /// Reports every issue (not just the first) so one CI run shows the full list.
     private func audit(screen: String) throws {
         // setUp stops tests at the first failure; keep going so one run lists every audit issue.
         let stopAtFirstFailure = continueAfterFailure
         continueAfterFailure = true
         defer { continueAfterFailure = stopAtFirstFailure }
-        try runAudit(screen: "\(screen) top")
+        try runAudit(screen: "\(screen) top", skipping: .bottom)
         for _ in 0..<3 { app.swipeUp() }
-        try runAudit(screen: "\(screen) bottom")
+        try runAudit(screen: "\(screen) bottom", skipping: .top)
         for _ in 0..<3 { app.swipeDown() }
     }
 
-    private func runAudit(screen: String) throws {
-        let bars = [app.tabBars.firstMatch.frame, app.navigationBars.firstMatch.frame]
+    private func runAudit(screen: String, skipping zone: EdgeZone) throws {
+        let window = app.windows.firstMatch.frame
+        let edgeBlur: CGFloat = 60
+        let skipRegion: CGRect = switch zone {
+        case .top:
+            CGRect(x: 0, y: 0, width: window.width, height: app.navigationBars.firstMatch.frame.maxY + edgeBlur)
+        case .bottom:
+            CGRect(x: 0, y: app.tabBars.firstMatch.frame.minY - edgeBlur, width: window.width,
+                   height: window.height - app.tabBars.firstMatch.frame.minY + edgeBlur)
+        }
         let barOwnLabels = Set(
             (app.tabBars.firstMatch.descendants(matching: .any).allElementsBoundByIndex
                 + app.navigationBars.firstMatch.descendants(matching: .any).allElementsBoundByIndex).map(\.label)
@@ -118,8 +129,8 @@ final class MainAppUITests: XCTestCase {
                let element,
                element.elementType == .staticText,
                !barOwnLabels.contains(element.label),
-               bars.contains(where: { $0.intersects(element.frame) }) {
-                return true  // scrolled under a bar in this pass; audited clear of it in the other pass
+               skipRegion.intersects(element.frame) {
+                return true  // in the bar-blur zone for this pass; audited at rest in the other pass
             }
             let detail = element.map { "\($0.elementType.rawValue) \"\($0.label)\" frame=\($0.frame)" } ?? "unknown element"
             XCTFail("[\(screen)] \(issue.compactDescription) | \(issue.detailedDescription) | \(detail)")

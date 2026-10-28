@@ -14,7 +14,7 @@ struct PrivacyView: View {
                     Label("Stored only on this iPhone", systemImage: "iphone")
                     Label("Encrypted while your iPhone is locked", systemImage: "lock")
                     Label("Not backed up to iCloud", systemImage: "icloud.slash")
-                    Label("Nothing is sent to RehabPath in this prototype", systemImage: "network.slash")
+                    Label("Nothing is sent anywhere yet", systemImage: "network.slash")
                 } header: {
                     Text("Your data").foregroundStyle(Color.mutedText)
                 }
@@ -34,11 +34,10 @@ struct PrivacyView: View {
                     }
                 } header: {
                     Text("Permissions").foregroundStyle(Color.mutedText)
-                } footer: {
-                    if let consent = model.data.consent {
-                        Text("You agreed on \(consent.grantedAt.formatted(date: .long, time: .omitted)) (version \(consent.version)).")
-                            .foregroundStyle(Color.mutedText)
-                    }
+                }
+
+                if let consent = model.data.consent {
+                    note("You agreed on \(consent.grantedAt.formatted(date: .long, time: .omitted)) (version \(consent.version)).")
                 }
 
                 Section {
@@ -48,6 +47,7 @@ struct PrivacyView: View {
                             preview: SharePreview("My RehabPath data")
                         ) {
                             Label("Download a copy of my data", systemImage: "square.and.arrow.up")
+                                .font(.body)
                         }
                         .accessibilityIdentifier("privacy.export")
                     }
@@ -55,14 +55,14 @@ struct PrivacyView: View {
                         confirmingDelete = true
                     } label: {
                         Label("Delete all my data", systemImage: "trash")
+                            .foregroundStyle(Color.destructiveText)
                     }
                     .accessibilityIdentifier("privacy.delete")
                 } header: {
                     Text("Your rights").foregroundStyle(Color.mutedText)
-                } footer: {
-                    Text("Deleting removes everything from this iPhone straight away and can't be undone. Questions? Email \(AppConfig.privacyEmail).")
-                        .foregroundStyle(Color.mutedText)
                 }
+
+                note("Deleting removes everything from this iPhone straight away and can't be undone. Questions? Email \(AppConfig.privacyEmail).")
 
                 Section {
                     Link("Privacy policy", destination: AppConfig.privacyPolicyURL)
@@ -84,6 +84,20 @@ struct PrivacyView: View {
             } message: {
                 Text("Your profile, check-ins and pain scores will be permanently removed from this iPhone.")
             }
+        }
+    }
+}
+
+extension PrivacyView {
+    /// Explanatory text as a plain row rather than a Section footer, which Apple's Dynamic Type
+    /// audit flags as unscalable (see CareTeamView).
+    private func note(_ text: LocalizedStringKey) -> some View {
+        Section {
+            Text(text)
+                .font(.footnote)
+                .foregroundStyle(Color.mutedText)
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
         }
     }
 }

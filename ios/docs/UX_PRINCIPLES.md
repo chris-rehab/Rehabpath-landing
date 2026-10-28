@@ -57,7 +57,8 @@ This follows ARCHITECTURE.md §7.
 |---|---|
 | Dynamic Type up to AX5 | System text styles only (`.body`, `.headline`…); no fixed font sizes; layouts scroll |
 | VoiceOver | Each exercise row reads as one element: "Mini squats, 3 sets of 10, Not done", with a hint; charts carry per-bar labels |
-| Contrast ≥ 4.5:1 | Accent `#9A5800` light (5.6:1) / `#F5A623` dark (8.4:1); text on accent `#FFF` / `#0D1117` |
+| Contrast ≥ 4.5:1 | Accent `#9A5800` light (5.6:1) / `#F5A623` dark (8.4:1); text on accent `#FFF` / `#0D1117`. Secondary text uses `Color.mutedText` (never `.secondary`, which is ~3.4:1); destructive actions use `Color.destructiveText` (never system red, ~3.5:1) |
+| Explanatory text in forms | Use a plain text row (see `CareTeamView.intro`, `PrivacyView.note`), not a `Section` footer: Apple's Dynamic Type audit flagged every footer we tried, at any length or wording, while the same text passes as a row |
 | Touch targets ≥ 44×44 pt | Rows set `minHeight: 44`; primary buttons are 50 pt |
 | Not colour alone | Done state uses a checkmark icon + VoiceOver value, not only colour |
 | Reduce Motion | Only system animations, which respect the setting automatically |
