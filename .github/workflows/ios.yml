@@ -61,13 +61,6 @@ jobs:
           print(phones[0]["udid"])')
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
 
-      - name: Boot simulator with a clean status bar
-        run: |
-          xcrun simctl bootstatus "${{ steps.sim.outputs.udid }}" -b
-          xcrun simctl status_bar "${{ steps.sim.outputs.udid }}" override \
-            --time 9:41 --batteryState charged --batteryLevel 100 \
-            --wifiBars 3 --cellularMode active --cellularBars 4
-
       - name: Test
         run: |
           cd ios
@@ -83,10 +76,50 @@ jobs:
       - name: Core tests on macOS
         run: swift test --package-path ios/Packages/RehabPathCore
 
-      # Design-review screenshots: every screen in light, dark and large-text, from synthetic data.
-      - name: Capture screenshots
+      - uses: actions/upload-artifact@v4
         if: always()
-        continue-on-error: true
+        with:
+          name: TestResults
+          path: ios/TestResults.xcresult
+          if-no-files-found: ignore
+
+  screenshots:
+    name: Design-review screenshots (iOS Simulator)
+    runs-on: macos-15
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XCODE"
+
+      - name: Generate project
+        run: |
+          brew install xcodegen
+          cd ios && xcodegen generate
+
+      - name: Pick simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          runtimes = json.load(sys.stdin)["devices"]
+          ios = sorted((r for r in runtimes if "iOS" in r), key=lambda r: [int(x) for x in r.rsplit("iOS-", 1)[1].split("-")])
+          phones = [d for d in runtimes[ios[-1]] if d["name"].startswith("iPhone")]
+          print(phones[0]["udid"])')
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+
+      - name: Boot simulator with a clean status bar
+        run: |
+          xcrun simctl bootstatus "${{ steps.sim.outputs.udid }}" -b
+          xcrun simctl status_bar "${{ steps.sim.outputs.udid }}" override \
+            --time 9:41 --batteryState charged --batteryLevel 100 \
+            --wifiBars 3 --cellularMode active --cellularBars 4
+
+      # Every screen in light, dark and large-text, from synthetic sample data only.
+      - name: Capture screenshots
         env:
           TEST_RUNNER_SCREENSHOT_DIR: ${{ github.workspace }}/screenshots
         run: |
@@ -107,12 +140,21 @@ jobs:
           path: screenshots
           if-no-files-found: warn
 
-      - uses: actions/upload-artifact@v4
+      # Also print compressed copies into this job's log, so they can be read where artifact
+      # downloads are not possible. Synthetic data only.
+      - name: Print compressed screenshots to the log
         if: always()
-        with:
-          name: TestResults
-          path: ios/TestResults.xcresult
-          if-no-files-found: ignore
+        run: |
+          mkdir -p small
+          for f in screenshots/*.png; do
+            n=$(basename "${f%.png}")
+            sips -Z 1000 -s format jpeg -s formatOptions 55 "$f" --out "small/$n.jpg" >/dev/null
+          done
+          for f in small/*.jpg; do
+            echo "::SHOT-BEGIN::$(basename "$f")"
+            base64 -i "$f" | fold -w 120
+            echo "::SHOT-END::$(basename "$f")"
+          done
 
   playground:
     name: Swift Playgrounds package (iPad, no Mac needed)
