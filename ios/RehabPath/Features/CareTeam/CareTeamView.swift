@@ -26,9 +26,14 @@ struct CareTeamView: View {
                 } header: {
                     Text("Who can see your progress").foregroundStyle(Color.mutedText)
                 } footer: {
-                    Text(sharingAllowed
-                         ? "You're in control. Turn sharing on only for people who support your recovery. Prototype: nothing is sent yet — this shows how sharing will work."
-                         : "Sharing is off. You can allow it in the Privacy tab.")
+                    Group {
+                        if sharingAllowed {
+                            Text("You're in control. Turn sharing on only for people who support your recovery. Prototype: nothing is sent yet — this shows how sharing will work.")
+                        } else {
+                            Text("Sharing is off. You can allow it in the Privacy tab.")
+                        }
+                    }
+                    .font(.footnote)
                     .foregroundStyle(Color.mutedText)
                 }
             }
