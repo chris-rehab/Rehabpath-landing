@@ -35,7 +35,7 @@ jobs:
     name: App build, unit + UI tests (iOS Simulator)
     needs: [compliance, core-tests]
     runs-on: macos-15
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -61,6 +61,13 @@ jobs:
           print(phones[0]["udid"])')
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
 
+      - name: Boot simulator with a clean status bar
+        run: |
+          xcrun simctl bootstatus "${{ steps.sim.outputs.udid }}" -b
+          xcrun simctl status_bar "${{ steps.sim.outputs.udid }}" override \
+            --time 9:41 --batteryState charged --batteryLevel 100 \
+            --wifiBars 3 --cellularMode active --cellularBars 4
+
       - name: Test
         run: |
           cd ios
@@ -69,11 +76,36 @@ jobs:
             -project RehabPath.xcodeproj \
             -scheme RehabPath \
             -destination "id=${{ steps.sim.outputs.udid }}" \
+            -skip-testing:RehabPathUITests/ScreenshotTests \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Core tests on macOS
         run: swift test --package-path ios/Packages/RehabPathCore
+
+      # Design-review screenshots: every screen in light, dark and large-text, from synthetic data.
+      - name: Capture screenshots
+        if: always()
+        continue-on-error: true
+        env:
+          TEST_RUNNER_SCREENSHOT_DIR: ${{ github.workspace }}/screenshots
+        run: |
+          cd ios
+          set -o pipefail
+          xcodebuild test \
+            -project RehabPath.xcodeproj \
+            -scheme RehabPath \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -only-testing:RehabPathUITests/ScreenshotTests \
+            -resultBundlePath Screenshots.xcresult \
+            CODE_SIGNING_ALLOWED=NO
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: screenshots
+          if-no-files-found: warn
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -81,3 +113,52 @@ jobs:
           name: TestResults
           path: ios/TestResults.xcresult
           if-no-files-found: ignore
+
+  playground:
+    name: Swift Playgrounds package (iPad, no Mac needed)
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select newest Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XCODE"
+
+      - name: Generate RehabPath.swiftpm
+        run: python3 ios/scripts/make_playground.py ios/build/RehabPath.swiftpm
+
+      - name: Pick simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          runtimes = json.load(sys.stdin)["devices"]
+          ios = sorted((r for r in runtimes if "iOS" in r), key=lambda r: [int(x) for x in r.rsplit("iOS-", 1)[1].split("-")])
+          phones = [d for d in runtimes[ios[-1]] if d["name"].startswith("iPhone")]
+          print(phones[0]["udid"])')
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+
+      # Proves the package compiles as a real iOS app; it does not prove it opens in Playgrounds.
+      - name: Build the playground as an iOS app
+        run: |
+          cd ios/build/RehabPath.swiftpm
+          set -o pipefail
+          xcodebuild build \
+            -scheme RehabPath \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Zip for download
+        if: always()
+        run: |
+          cd ios/build
+          zip -qr RehabPath-Playground.zip RehabPath.swiftpm
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: RehabPath-Playground
+          path: ios/build/RehabPath-Playground.zip
+          if-no-files-found: warn

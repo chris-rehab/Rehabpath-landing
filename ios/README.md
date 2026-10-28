@@ -25,6 +25,13 @@ cd ios && xcodegen generate && open RehabPath.xcodeproj
 
 Launch arguments for demos and screenshots: `-ui-testing -seed-onboarded` (synthetic data, in-memory, no prompts).
 
+## See it without a Mac
+
+Every CI run (`.github/workflows/ios.yml`) publishes two artifacts you can open from the GitHub Actions page on an iPad:
+
+- **screenshots** — every screen in light, dark and large-text, from synthetic sample data.
+- **RehabPath-Playground** — a zip containing `RehabPath.swiftpm`. Unzip it in the Files app, open it in the free Swift Playgrounds app and tap Run. It runs the real app on sample data held in memory (nothing is saved; "Delete all my data" on the Privacy tab returns to onboarding). Regenerate it locally with `python3 ios/scripts/make_playground.py`.
+
 ## Quality gates
 
 ```bash
