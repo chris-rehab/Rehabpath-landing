@@ -7,6 +7,14 @@ struct CareTeamView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // Plain row, not a Section footer: Apple's Dynamic Type audit flags this footer as
+                // unscalable even though the same text passes as an ordinary row.
+                Section {
+                    intro
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 0, trailing: 4))
+                }
+
                 Section {
                     ForEach(model.data.careTeam) { member in
                         Toggle(isOn: Binding(
@@ -25,19 +33,22 @@ struct CareTeamView: View {
                     }
                 } header: {
                     Text("Who can see your progress").foregroundStyle(Color.mutedText)
-                } footer: {
-                    Group {
-                        if sharingAllowed {
-                            Text("You choose who sees your progress. Prototype: nothing is sent yet.")
-                        } else {
-                            Text("Sharing is off. You can allow it in the Privacy tab.")
-                        }
-                    }
-                    .font(.footnote)
-                    .foregroundStyle(Color.mutedText)
                 }
             }
             .navigationTitle("Care team")
+        }
+    }
+
+    @ViewBuilder
+    private var intro: some View {
+        if sharingAllowed {
+            Text("You choose who sees your progress. Prototype: nothing is sent yet.")
+                .font(.footnote)
+                .foregroundStyle(Color.mutedText)
+        } else {
+            Text("Sharing is off. You can allow it in the Privacy tab.")
+                .font(.footnote)
+                .foregroundStyle(Color.mutedText)
         }
     }
 
