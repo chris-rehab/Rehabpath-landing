@@ -6,7 +6,7 @@ struct CareTeamView: View {
 
     var body: some View {
         NavigationStack {
-            List {
+            Form {
                 Section {
                     ForEach(model.data.careTeam) { member in
                         Toggle(isOn: Binding(
@@ -28,7 +28,7 @@ struct CareTeamView: View {
                 } footer: {
                     Group {
                         if sharingAllowed {
-                            Text("You're in control. Turn sharing on only for people who support your recovery. Prototype: nothing is sent yet — this shows how sharing will work.")
+                            Text("You choose who sees your progress. Prototype: nothing is sent yet.")
                         } else {
                             Text("Sharing is off. You can allow it in the Privacy tab.")
                         }
