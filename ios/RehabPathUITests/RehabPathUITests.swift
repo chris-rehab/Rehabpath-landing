@@ -103,21 +103,10 @@ final class MainAppUITests: XCTestCase {
         let stopAtFirstFailure = continueAfterFailure
         continueAfterFailure = true
         defer { continueAfterFailure = stopAtFirstFailure }
-        settle()
         try runAudit(screen: "\(screen) top", skipping: .bottom)
         for _ in 0..<3 { app.swipeUp() }
-        settle()
         try runAudit(screen: "\(screen) bottom", skipping: .top)
         for _ in 0..<3 { app.swipeDown() }
-        settle()
-    }
-
-    /// Lets tab-switch and scroll-deceleration animations finish, so the audit measures a still
-    /// screen rather than frames captured mid-motion.
-    private func settle(seconds: TimeInterval = 1.5) {
-        let pause = XCTestExpectation(description: "settle")
-        pause.isInverted = true
-        _ = XCTWaiter.wait(for: [pause], timeout: seconds)
     }
 
     private func runAudit(screen: String, skipping zone: EdgeZone) throws {

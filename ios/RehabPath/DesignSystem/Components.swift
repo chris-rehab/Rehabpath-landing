@@ -27,6 +27,21 @@ struct Card<Content: View>: View {
     }
 }
 
+/// Card heading, exposed to VoiceOver's heading rotor.
+struct CardTitle: View {
+    private let text: LocalizedStringKey
+
+    init(_ text: LocalizedStringKey) {
+        self.text = text
+    }
+
+    var body: some View {
+        Text(text)
+            .font(.title3.weight(.semibold))
+            .accessibilityAddTraits(.isHeader)
+    }
+}
+
 /// The one prominent action on a screen. Full width, at least 50pt tall, dark-on-orange in dark mode.
 struct PrimaryButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
